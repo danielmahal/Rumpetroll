@@ -42,12 +42,12 @@ h2 {
 }
 
 a {
-	color: #cb97c2;
+	color: #aaa;
 	text-decoration: none;
 }
 
 	a:hover {
-		color: #b175a6;
+		color: #fff;
 	}
 
 p {
