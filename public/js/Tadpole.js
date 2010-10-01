@@ -26,8 +26,11 @@ var Tadpole = function() {
 	var tadpoleDistanceFalloff = 1.8;
 	
 	this.changed = 0;
+	this.timeSinceLastServerUpdate = 0;
 	
 	this.update = function(tadpoles) {
+		tadpole.timeSinceLastServerUpdate++;
+		
 		animationRate += (.2 + tadpole.momentum / 10);
 		
 		tadpole.x += Math.cos(tadpole.angle) * tadpole.momentum;
@@ -80,18 +83,20 @@ var Tadpole = function() {
 		}
 		
 		tadpole.changed += Math.abs((prevState.angle - tadpole.angle)*3) + tadpole.momentum;
+		
+		if(tadpole.changed > 1) {
+			this.timeSinceLastServerUpdate = 0;
+		}
 	};
 	
 	this.draw = function(context) {
-		if(tadpole.timeSinceLastActivity > 1) {
-			context.fillStyle = '#6e5b6e';
-		} else {
-			context.fillStyle = '#e2dbe2';
-			context.shadowOffsetX = 0;
-			context.shadowOffsetY = 0;
-			context.shadowBlur    = 6;
-			context.shadowColor   = 'rgba(255, 255, 255, 0.6)';
-		}
+		var opacity = Math.max(Math.min(20 / Math.max(tadpole.timeSinceLastServerUpdate-300,1),1),.2).toFixed(3);
+		context.fillStyle = 'rgba(226,219,226,'+opacity+')';
+		
+		context.shadowOffsetX = 0;
+		context.shadowOffsetY = 0;
+		context.shadowBlur    = 6;
+		context.shadowColor   = 'rgba(255, 255, 255, '+1+')';
 		
 		// Draw circle
 		context.beginPath();

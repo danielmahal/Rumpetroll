@@ -54,4 +54,11 @@ if(debug) {
 	isStatsOn = true;
 }
 
+$(function() {
+	$('a[rel=external]').click(function(e) {
+		e.preventDefault();
+		window.open($(this).attr('href'));
+	});
+});
+
 document.body.onselectstart = function() { return false; }
