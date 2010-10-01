@@ -21,14 +21,16 @@ class TadpoleConnection
 		socket.onopen {
 		  
 		  origin = socket.request["Origin"]		  
-  	  puts "Connection from: #{origin}"
-  	  
+      port, ip = Socket.unpack_sockaddr_in(socket.get_peername)                          	                	  
+      
+      puts "Connection ##{@tadpole.id } from: #{ip}:#{port} at #{origin}" 
+             	  
   	  if WHITELIST.include?(origin) || DEV_MODE
   		  @socket.send(%({"type":"welcome","id":#{@tadpole.id}}))
   		  subscribe(channel)
 	    else
 	      socket.close_connection 
-      end
+      end            
 		  		  
 		}		
 		
@@ -40,9 +42,10 @@ class TadpoleConnection
 		@socket.onmessage {|message| process_message(message) }
 		@socket.onclose { unsubscribe }
 	end
-	
+		
 	def unsubscribe()
 	  broadcast %({"type":"closed","id":#{@tadpole.id}})    
+	  puts "Disconnect ##{@tadpole.id }"
 		@channel.unsubscribe(@id)
 	end
 		
@@ -76,9 +79,11 @@ class TadpoleConnection
 
   def message_handler(json)
     msg = json["message"]
-    msg = msg[0...45]
+    msg = msg[0...45]        
+    
     Message.create(:body => "#{msg}", :author => @tadpole.handle);  
-    broadcast( %({"type":"message","id":#{@tadpole.id},"message":"#{msg}"}) )
+        
+    broadcast( %({"type":"message","id":#{@tadpole.id},"message":#{ msg.dump }}) )
   end
   
 	
@@ -89,7 +94,7 @@ EventMachine.run do
 	port = 8180
 	channel = EM::Channel.new
 	
-	EventMachine::WebSocket.start(:host => host, :port => port, :debug => false) do |socket|
+	EventMachine::WebSocket.start(:host => host, :port => port, :debug => DEV_MODE) do |socket|
 		TadpoleConnection.new(socket, channel)
 	end
 	
