@@ -13,21 +13,18 @@ var App = function(aCanvas) {
 	
 	app.update = function() {
 		// Update usertadpole
-		if(model.userTadpole) {
-			var mvp = getMouseWorldPosition();
-			mouse.worldx = mvp.x;
-			mouse.worldy = mvp.y;
-			
-			model.userTadpole.setAngle(mouse.worldx, mouse.worldy);
-			
-			model.userTadpole.userUpdate(model.tadpoles);
-			
-			if(model.userTadpole.age % 6 == 0) {
-				webSocketService.sendUpdate(model.userTadpole);
-			}
-			
-			model.camera.update(model);
+		var mvp = getMouseWorldPosition();
+		mouse.worldx = mvp.x;
+		mouse.worldy = mvp.y;
+		
+		model.userTadpole.setAngle(mouse.worldx, mouse.worldy);
+		model.userTadpole.userUpdate(model.tadpoles);
+		
+		if(model.userTadpole.age % 6 == 0 && webSocketService.hasConnection) {
+			webSocketService.sendUpdate(model.userTadpole);
 		}
+		
+		model.camera.update(model);
 		
 		// Update tadpoles
 		for(id in model.tadpoles) {
@@ -36,7 +33,7 @@ var App = function(aCanvas) {
 		
 		// Update waterParticles
 		for(i in model.waterParticles) {
-			model.waterParticles[i].update(model.camera.getOuterBounds());
+			model.waterParticles[i].update(model.camera.getOuterBounds(), model.camera.zoom);
 		}
 		
 		// Update arrows
@@ -135,7 +132,17 @@ var App = function(aCanvas) {
 		resizeCanvas();
 		
 		model = new Model();
-		model.camera = new Camera(canvas, context);
+		
+		model.userTadpole = new Tadpole();
+		model.userTadpole.id = -1;
+		model.tadpoles[model.userTadpole.id] = model.userTadpole;
+		
+		model.waterParticles = [];
+		for(var i = 0; i < 500; i++) {
+			model.waterParticles.push(new WaterParticle());
+		}
+		
+		model.camera = new Camera(canvas, context, model.userTadpole.x, model.userTadpole.y);
 		
 		model.arrows = {};
 		

@@ -55,6 +55,10 @@ p {
 	font-size: 1.3em;
 }
 
+/*#ui {
+	display: none;
+}*/
+
 #fps {
 	position: absolute;
 	top: 0;
