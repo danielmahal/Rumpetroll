@@ -1,6 +1,9 @@
 require 'sequel'
 
-DB = Sequel.sqlite('tadpole.db')
+STORAGE_DIR = "#{File.dirname(__FILE__)}/../data"
+Dir.mkdir STORAGE_DIR unless File.exists? STORAGE_DIR
+
+DB = Sequel.sqlite("#{STORAGE_DIR}/tadpole.db")
 DB.create_table? :messages do
   primary_key :id
   
@@ -13,3 +16,4 @@ end
 class Message < Sequel::Model
 	plugin :timestamps, :create => :created_on
 end
+
