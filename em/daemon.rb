@@ -7,14 +7,26 @@ require 'em-websocket'
 require 'json'
 require 'Tadpole.rb'
 
+WHITELIST = ["http://rumpetroll.com","http://dev.rumpetroll.com","http://www.rumpetroll.com","http://rumpetroll.six12.co"]
+
 class TadpoleConnection
 	def initialize(socket, channel)
 		@socket = socket
 		@tadpole = Tadpole.new()
 						
 		socket.onopen {
-		  subscribe(channel)
-		  @socket.send(%({"type":"welcome","id":#{@tadpole.id}}))
+		  
+		  origin = socket.request["Origin"]		  
+  	  puts "Connection from: #{origin}"
+  	  
+  	  if WHITELIST.include? origin
+  	    subscribe(channel)
+  		  @socket.send(%({"type":"welcome","id":#{@tadpole.id}}))
+	    else
+	      socket.close_connection 
+      end
+		  
+		  
 		}		
 		
 	end
@@ -59,7 +71,7 @@ class TadpoleConnection
   end
 
   def message_handler(json)
-    Message.create(:body => "#{obj["message"]}", :author => @tadpole.handle);  
+    Message.create(:body => "#{json["message"]}", :author => @tadpole.handle);  
     broadcast( %({"type":"message","id":#{@tadpole.id},"message":"#{json["message"]}"}) )
   end
   
