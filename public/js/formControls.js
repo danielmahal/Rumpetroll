@@ -23,6 +23,8 @@
 		input.keyup(function(e) {
 			var k = e.keyCode;
 			
+			input.val(input.val().substr(0,50));
+			
 			if(input.val().length > 0) {
 				chatview.text(input.val());
 				chatview.css({
