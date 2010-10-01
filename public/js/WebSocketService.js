@@ -4,22 +4,16 @@ var WebSocketService = function(model, webSocket) {
 	var webSocket = webSocket;
 	var model = model;
 	
+	this.hasConnection = false;
+	
 	this.welcomeHandler = function(data) {
-		// Create userTapole
-		model.userTadpole = new Tadpole();
-		model.userTadpole.id = data.id;
+		webSocketService.hasConnection = true;
 		
-		// model.userTadpole.x = Math.random() * 200 - 100;
-		// model.userTadpole.y = Math.random() * 200 - 100;
+		model.userTadpole.id = data.id;
+		model.tadpoles[data.id] = model.tadpoles[-1];
+		delete model.tadpoles[-1];
 		
 		$('#chat').initChat();
-		
-		//model.userTadpole.messages.push(new Message('Yo!'));
-		//model.userTadpole.messages.push(new Message('Det er her det skjer?'));
-		
-		model.tadpoles[model.userTadpole.id] = model.userTadpole;
-		
-		createWaterParticles();
 	};
 	
 	this.updateHandler = function(data) {
@@ -78,13 +72,7 @@ var WebSocketService = function(model, webSocket) {
 	}
 	
 	this.connectionClosed = function() {
-		if(!model.userTadpole) {
-			model.userTadpole = new Tadpole();
-			model.tadpoles[model.userTadpole.id] = model.userTadpole;
-			
-			createWaterParticles();
-		}
-		
+		webSocketService.hasConnection = false;
 		$('#cant-connect').fadeIn(300);
 	};
 	
@@ -117,13 +105,5 @@ var WebSocketService = function(model, webSocket) {
 		};
 		
 		webSocket.send(JSON.stringify(sendObj));
-	}
-	
-	var createWaterParticles = function() {
-		var bounds = model.camera.getBounds();
-		model.waterParticles = [];
-		for(var i = 0; i < 50; i++) {
-			model.waterParticles.push(new WaterParticle(bounds));
-		}
 	}
 }
