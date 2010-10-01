@@ -17,10 +17,10 @@ var App = function(aCanvas) {
 		mouse.worldx = mvp.x;
 		mouse.worldy = mvp.y;
 		
-		model.userTadpole.setAngle(mouse.worldx, mouse.worldy);
-		model.userTadpole.userUpdate(model.tadpoles);
+		model.userTadpole.userUpdate(model.tadpoles, mouse.worldx, mouse.worldy);
 		
-		if(model.userTadpole.age % 6 == 0 && webSocketService.hasConnection) {
+		if(model.userTadpole.age % 6 == 0 && model.userTadpole.changed > 1 && webSocketService.hasConnection) {
+			model.userTadpole.changed = 0;
 			webSocketService.sendUpdate(model.userTadpole);
 		}
 		
@@ -81,7 +81,10 @@ var App = function(aCanvas) {
 	};
 	
 	app.onSocketMessage = function(e) {
-		webSocketService.processMessage(JSON.parse(e.data));
+		try {
+			var data = JSON.parse(e.data);
+			webSocketService.processMessage(data);
+		} catch(e) {}
 	};
 	
 	app.sendMessage = function(msg) {

@@ -25,16 +25,10 @@ var Tadpole = function() {
 	var tadpoleForce = 1;
 	var tadpoleDistanceFalloff = 1.8;
 	
+	this.changed = 0;
+	
 	this.update = function(tadpoles) {
-		var prevState = {
-			x: tadpole.x,
-			y: tadpole.y,
-			angle: tadpole.angle
-		}
-		
 		animationRate += (.2 + tadpole.momentum / 10);
-		
-		//tadpole.angle += Math.cos(animationRate) * (tadpole.momentum + .3) / 30;
 		
 		tadpole.x += Math.cos(tadpole.angle) * tadpole.momentum;
 		tadpole.y += Math.sin(tadpole.angle) * tadpole.momentum;
@@ -57,21 +51,14 @@ var Tadpole = function() {
 	
 	
 	
-	this.userUpdate = function(tadpoles) {
+	this.userUpdate = function(tadpoles, angleTargetX, angleTargetY) {
 		this.age++;
 		
-		// Momentum to targetmomentum
-		if(tadpole.targetMomentum != tadpole.momentum) {
-			tadpole.momentum += (tadpole.targetMomentum - tadpole.momentum) / 20;
+		var prevState = {
+			angle: tadpole.angle,
+			momentum: tadpole.momentum,
 		}
-				
-		if(tadpole.momentum < 0) {
-			tadpole.momentum = 0;
-		}
-	};
-	
-	
-	this.setAngle = function(angleTargetX, angleTargetY) {
+		
 		// Angle to targetx and targety (mouse position)
 		var anglediff = ((Math.atan2(angleTargetY - tadpole.y, angleTargetX - tadpole.x)) - tadpole.angle);
 		while(anglediff < -Math.PI) {
@@ -82,7 +69,18 @@ var Tadpole = function() {
 		}
 		
 		tadpole.angle += anglediff / 5;
-	}
+		
+		// Momentum to targetmomentum
+		if(tadpole.targetMomentum != tadpole.momentum) {
+			tadpole.momentum += (tadpole.targetMomentum - tadpole.momentum) / 20;
+		}
+				
+		if(tadpole.momentum < 0) {
+			tadpole.momentum = 0;
+		}
+		
+		tadpole.changed += Math.abs((prevState.angle - tadpole.angle)*3) + tadpole.momentum;
+	};
 	
 	this.draw = function(context) {
 		if(tadpole.timeSinceLastActivity > 1) {
