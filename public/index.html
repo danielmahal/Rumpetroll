@@ -1,0 +1,73 @@
+<!doctype html>
+
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Rumpetroll! — It's norwegian, but probably not what you think</title>
+		<link rel="stylesheet" type="text/css" href="css/main.css" />
+		
+		<meta name="title" content="Rumpetroll!" />
+		<meta name="description" content="It's norwegian, but probably not what you think" />
+		<link rel="image_src" href="images/fb-image.jpg" / >
+	</head>
+	<body>
+		<canvas id="canvas"></canvas>
+		<div id="fps"></div>
+		
+		<input id="chat" type="text" />
+		<div id="chatview"></div>
+		
+		<h1>Rumpetroll</h1>
+		
+		<div id="instructions">
+			<h2>Instructions</h2>
+			<p>Click &amp; hold to swim – type to chat!<br />Type 'name: yourname'</p>
+		</div>
+		
+		<aside id="info">
+			<section id="share">
+				<iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwww.rumpetroll.com%2F&amp;layout=button_count&amp;show_faces=false&amp;width=50&amp;action=like&amp;font=verdana&amp;colorscheme=light&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:90px; height:21px;" allowTransparency="true"></iframe>
+				<a href="http://twitter.com/share" class="twitter-share-button" data-url="http://j.mp/rmptrll" data-text="A HTML5/Canvas experiment featuring Rumpetrolls! made by @danielmahal @hpeikemo @hugoahlberg" data-count="none" data-related="hugoahlberg" data-related="danielmahal" datarelated="hpeikemo">Tweet</a><script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+			</section>
+			
+			<!-- <section id="wtf">
+				<h2>WTF is a "rumpetroll"?</h2>
+				<p><a href="">Glad you asked…</a></p>
+			</section> -->
+			<section id="concept">
+				<h2>Created with scandinavian love by:</h2>
+				<ul>
+					<li><a rel="external" href="http://www.twitter.com/danielmahal">@danielmahal</a></li>
+					<li><a rel="external" href="http://www.twitter.com/hpeikemo">@hpeikemo</a></li>
+					<li><a rel="external" href="http://www.twitter.com/hugoahlberg">@hugoahlberg</a></li>
+					<li><a rel="external" href="http://www.twitter.com/simenbrekken">@simenbrekken</a></li>
+				</ul>
+			</section>
+		</aside>
+		
+		<div id="cant-connect">
+			Ooops. Did you do this?<br />The mother-frog is unable to deliver you to the primordial pond. Please try again later to play with other Rumpetrolls.
+		</div>
+		
+		<script src="js/lib/jquery-1.4.2.min.js"></script>
+		<script src="js/lib/Stats.js"></script>
+		
+		<script src="js/App.js"></script>
+		<script src="js/Model.js"></script>
+		<script src="js/WebSocketService.js"></script>
+		<script src="js/Camera.js"></script>
+		<script src="js/Tadpole.js"></script>
+		<script src="js/Message.js"></script>
+		<script src="js/WaterParticle.js"></script>
+		<script src="js/Arrow.js"></script>
+		<script src="js/formControls.js"></script>
+		
+		<script src="js/main.js"></script>
+		
+		<script src="js/analytics.js"></script>
+		
+		<script type="text/javascript" src="http://use.typekit.com/znu4fui.js"></script> 
+		<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+	</body>
+</html>
+

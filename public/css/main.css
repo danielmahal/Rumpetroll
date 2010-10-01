@@ -1,0 +1,137 @@
+
+/*
+Copyright (c) 2010, Yahoo! Inc. All rights reserved.
+Code licensed under the BSD License:
+http://developer.yahoo.com/yui/license.html
+version: 3.2.0
+build: 2676
+*/
+html{color:#000;background:#FFF;}body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td{margin:0;padding:0;}table{border-collapse:collapse;border-spacing:0;}fieldset,img{border:0;}address,caption,cite,code,dfn,em,strong,th,var{font-style:normal;font-weight:normal;}li{list-style:none;}caption,th{text-align:left;}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal;}q:before,q:after{content:'';}abbr,acronym{border:0;font-variant:normal;}sup{vertical-align:text-top;}sub{vertical-align:text-bottom;}input,textarea,select{font-family:inherit;font-size:inherit;font-weight:inherit;}input,textarea,select{*font-size:100%;}legend{color:#000;}
+
+html {
+	-webkit-user-select: none;
+	cursor: caret;
+}
+
+body {
+	font-family: "proxima-nova-1","proxima-nova-2", arial, sans-serif;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	background: #330033 /*url(images/bg.png)*/;
+	font-size: 62.5%;
+}
+
+h1 {
+	display: block;
+	position: absolute;
+	top: 30px;
+	left: 30px;
+	width: 268px;
+	height: 30px;
+	background: url(images/logo.png);
+	overflow: hidden;
+	text-indent: 300px;
+}
+
+h2 {
+	color: #fff;
+	font-size: 1.3em;
+	margin-bottom: 0.2em;
+	font-weight: bold;
+}
+
+a {
+	color: #cb97c2;
+	text-decoration: none;
+}
+
+	a:hover {
+		color: #b175a6;
+	}
+
+p {
+	color: #999999;
+	font-size: 1.3em;
+}
+
+#fps {
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+#chat {
+	position: absolute;
+	height: 1px;
+	top: -100px;
+	left: 0;
+}
+
+#chatview {
+	/*font-family: "Arial Rounded MT Bold";*/
+	display: none;
+	position: absolute;
+	top: 60%;
+	left: 50%;
+	padding: 10px 20px;
+	background: rgba(255,255,255,.1);
+	-webkit-border-radius: 20px;
+	color: #fff;
+	max-width: 70%;
+	text-align: center;
+	font-size: 3em;
+	font-weight: bold;
+}
+
+#cant-connect {
+	/*font-family: "Arial Rounded MT Bold";*/
+	display: none;
+	position: absolute;
+	top: 70px;
+	left: 10px;
+	padding: 10px 20px;
+	color: rgba(255,255,255,0.6);
+	width: 400px;
+	font-size: 1.4em;
+	font-weight: bold;
+}
+
+#info {
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	background: rgba(0,0,0,0.2);
+}
+	#info section {
+		float: left;
+		margin: 20px 40px 20px 20px;
+		margin-right: 40px;
+	}
+		#info #share {
+			float: right;
+			margin-right: 40px;
+		}
+		
+		#info section ul {
+		
+		}
+			#info section ul li {
+				float: left;
+				margin-right: 10px;
+			}
+				#info section ul li a {
+					font-size: 1.3em;
+				}
+	
+	#info #settings .edit {
+		display: none;
+	}
+	
+
+#instructions {
+	position: absolute;
+	top: 30px;
+	right: 40px;
+}
