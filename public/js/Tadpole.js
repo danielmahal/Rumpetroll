@@ -22,7 +22,6 @@ var Tadpole = function() {
 	this.tail = [];
 	var animationRate = 0;
 	
-	
 	var tadpoleForce = 1;
 	var tadpoleDistanceFalloff = 1.8;
 	
@@ -53,13 +52,6 @@ var Tadpole = function() {
 			if(msg.age == msg.maxAge) {
 				tadpole.messages.splice(i,1);
 			}
-		}
-		
-		var change=1;
-		if(change > 0) {
-			tadpole.timeSinceLastActivity = 0;
-		} else {
-			tadpole.timeSinceLastActivity++;
 		}
 	};
 	
