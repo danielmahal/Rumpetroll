@@ -96,7 +96,7 @@ var Tadpole = function() {
 		context.shadowOffsetX = 0;
 		context.shadowOffsetY = 0;
 		context.shadowBlur    = 6;
-		context.shadowColor   = 'rgba(255, 255, 255, '+1+')';
+		context.shadowColor   = 'rgba(255, 255, 255, '+opacity*0.7+')';
 		
 		// Draw circle
 		context.beginPath();
@@ -113,8 +113,6 @@ var Tadpole = function() {
 		drawName(context);
 		drawMessages(context);
 	};
-	
-	
 	
 	var drawTail = function(context) {
 		
@@ -159,8 +157,6 @@ var Tadpole = function() {
 			path2.push({x: x2, y: y2});
 		}
 		
-		//context.beginPath();
-		//context.moveTo(path1[0].x, path1[0].y)
 		for(var i = 0; i < path1.length; i++) {
 			context.lineTo(path1[i].x, path1[i].y);
 		}
@@ -168,9 +164,6 @@ var Tadpole = function() {
 		for(var i = 0; i < path2.length; i++) {
 			context.lineTo(path2[i].x, path2[i].y);
 		}
-		
-		//context.closePath();
-		//context.fill();
 	};
 	
 	var drawName = function(context) {
@@ -191,7 +184,7 @@ var Tadpole = function() {
 	
 	// Constructor
 	(function() {
-		for(var i = 0; i < 15; i++) {
+		for(var i = 0; i < 20; i++) {
 			tadpole.tail.push({
 				x: 0,
 				y: 0,

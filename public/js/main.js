@@ -23,7 +23,7 @@ document.addEventListener('mousemove', app.mousemove);
 document.addEventListener('mousedown', app.mousedown);
 document.addEventListener('mouseup', app.mouseup);
 
-setInterval(runLoop,30);
+setInterval(runLoop,1000/60);
 
 var addStats = function() {
 	// Draw fps

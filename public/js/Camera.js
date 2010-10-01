@@ -11,13 +11,16 @@ var Camera = function(aCanvas, aContext, x, y) {
 	this.maxZoom = 1.8;
 	this.zoom = this.minZoom;
 	
+	var backgroundColor = Math.random()*360;
+	
 	this.setupContext = function() {
 		var translateX = canvas.width / 2 - camera.x * camera.zoom;
 		var translateY = canvas.height / 2 - camera.y * camera.zoom;
 		
 		// Reset transform matrix
 		context.setTransform(1,0,0,1,0,0);
-		context.clearRect(0,0,canvas.width, canvas.height);
+		context.fillStyle = 'hsl('+backgroundColor+',50%,10%)';
+		context.fillRect(0,0,canvas.width, canvas.height);
 		
 		context.translate(translateX, translateY);
 		context.scale(camera.zoom, camera.zoom);
@@ -28,6 +31,9 @@ var Camera = function(aCanvas, aContext, x, y) {
 	};
 	
 	this.update = function(model) {
+		backgroundColor += 0.08;
+		backgroundColor = backgroundColor > 360 ? 0 : backgroundColor;
+		
 		var targetZoom = (model.camera.maxZoom + (model.camera.minZoom - model.camera.maxZoom) * Math.min(model.userTadpole.momentum, model.userTadpole.maxMomentum) / model.userTadpole.maxMomentum);
 		model.camera.zoom += (targetZoom - model.camera.zoom) / 60;
 		
