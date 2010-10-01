@@ -1,46 +1,31 @@
-var WaterParticle = function(bounds) {
-	var waterParticle = this;
+var WaterParticle = function() {
+	var wp = this;
 	
-	this.x = 0;
-	this.y = 0;
-	this.z = Math.random() * 1 + 0.3;
-	this.size = 1.2;
-	this.opacity = Math.random() * 0.8 + 0.1;
+	wp.x = 0;
+	wp.y = 0;
+	wp.z = Math.random() * 1 + 0.3;
+	wp.size = 1.2;
+	wp.opacity = Math.random() * 0.8 + 0.1;
 	
-	this.update = function(bounds) {
-		if(waterParticle.x == 0) {
-			waterParticle.x = Math.random() * (bounds[1].x * 2) - bounds[1].x;
+	wp.update = function(bounds) {
+		if(wp.x == 0 || wp.y == 0) {
+			wp.x = Math.random() * (bounds[1].x - bounds[0].x) + bounds[0].x;
+			wp.y = Math.random() * (bounds[1].y - bounds[0].y) + bounds[0].y;
 		}
 		
-		if(waterParticle.y == 0) {
-			waterParticle.y = Math.random() * (bounds[1].y * 2) - bounds[1].y;
-		}
-		
-		if(waterParticle.x < bounds[0].x) {
-			waterParticle.x = bounds[1].x;
-		}
-		
-		if(waterParticle.y < bounds[0].y) {
-			waterParticle.y = bounds[1].y;
-		}
-		
-		if(waterParticle.x > bounds[1].x) {
-			waterParticle.x = bounds[0].x;
-		}
-		
-		if(waterParticle.y > bounds[1].y) {
-			waterParticle.y = bounds[0].y;
-		}
-		
-		//waterParticle.opacity += Math.random() * 0.2 - 0.1;
+		// Wrap around screen
+		wp.x = wp.x < bounds[0].x ? bounds[1].x : wp.x;
+		wp.y = wp.y < bounds[0].y ? bounds[1].y : wp.y;
+		wp.x = wp.x > bounds[1].x ? bounds[0].x : wp.x;
+		wp.y = wp.y > bounds[1].y ? bounds[0].y : wp.y;
 	};
 	
-	this.draw = function(context) {
+	wp.draw = function(context) {
 		// Draw circle
-		context.fillStyle = 'rgba(226,219,226,'+waterParticle.opacity+')';
+		context.fillStyle = 'rgba(226,219,226,'+wp.opacity+')';
 		//context.fillStyle = '#fff';
 		context.beginPath();
-		context.arc(waterParticle.x, waterParticle.y, this.z * this.size, 0, Math.PI*2, true);
+		context.arc(wp.x, wp.y, this.z * this.size, 0, Math.PI*2, true);
 		context.closePath();
 		context.fill();
 	};
