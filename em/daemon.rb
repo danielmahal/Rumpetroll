@@ -8,6 +8,7 @@ require 'storage'
 require 'em-websocket'
 require 'json'
 require 'Tadpole.rb'
+require 'socket'
 
 
 DEV_MODE = ARGV[0] == "dev"
@@ -83,7 +84,7 @@ class TadpoleConnection
     
     Message.create(:body => "#{msg}", :author => @tadpole.handle);  
         
-    broadcast( %({"type":"message","id":#{@tadpole.id},"message":#{ msg.dump }}) )
+    broadcast( %({"type":"message","id":#{@tadpole.id},"message":#{ msg.to_json }}) )
   end
   
 	
