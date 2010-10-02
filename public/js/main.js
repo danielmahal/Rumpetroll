@@ -1,3 +1,5 @@
+var settings = new Settings();
+
 var debug = false;
 var isStatsOn = false;
 
@@ -15,7 +17,7 @@ var runLoop = function() {
 	app.draw();
 }
 
-var app = new App(document.getElementById('canvas'));
+var app = new App(settings, document.getElementById('canvas'));
 
 window.addEventListener('resize', app.resize);
 
