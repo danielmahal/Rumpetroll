@@ -8,10 +8,13 @@ var App = function(aSettings, aCanvas) {
 			context,
 			webSocket,
 			webSocketService,
-			mouse = {x: 0, y: 0, worldx: 0, worldy: 0}
+			mouse = {x: 0, y: 0, worldx: 0, worldy: 0},
+			messageQuota = 5
 	;
 	
 	app.update = function() {
+	  if (messageQuota < 5 && model.userTadpole.age % 50 == 0) { messageQuota++; }
+	  
 		// Update usertadpole
 		var mvp = getMouseWorldPosition();
 		mouse.worldx = mvp.x;
@@ -87,7 +90,12 @@ var App = function(aSettings, aCanvas) {
 	};
 	
 	app.sendMessage = function(msg) {
-		webSocketService.sendMessage(msg);
+	  
+	  if (messageQuota>0) {
+	    messageQuota--;
+	    webSocketService.sendMessage(msg);
+	  }
+	  
 	}
 	
 	app.mousedown = function(e) {
