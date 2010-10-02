@@ -1,3 +1,5 @@
+var settings = new Settings();
+
 var debug = false;
 var isStatsOn = false;
 
@@ -15,13 +17,19 @@ var runLoop = function() {
 	app.draw();
 }
 
-var app = new App(document.getElementById('canvas'));
+var app = new App(settings, document.getElementById('canvas'));
 
 window.addEventListener('resize', app.resize);
 
 document.addEventListener('mousemove', app.mousemove);
 document.addEventListener('mousedown', app.mousedown);
 document.addEventListener('mouseup', app.mouseup);
+
+document.addEventListener('touchstart',   app.touchstart );
+document.addEventListener('touchend',     app.touchend );
+document.addEventListener('touchcancel',  app.touchend );
+document.addEventListener('touchmove',    app.touchmove );
+
 
 setInterval(runLoop,30);
 

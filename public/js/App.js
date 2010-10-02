@@ -1,6 +1,6 @@
 
 
-var App = function(aCanvas) {
+var App = function(aSettings, aCanvas) {
 	var app = this;
 	
 	var 	model,
@@ -110,6 +110,34 @@ var App = function(aCanvas) {
 		mouse.y = e.clientY;
 	};
 	
+	app.touchstart = function(e) {
+	  e.preventDefault();
+	  mouse.clicking = true;		
+		
+		if(model.userTadpole) {
+			model.userTadpole.momentum = model.userTadpole.targetMomentum = model.userTadpole.maxMomentum;
+		}
+		
+		var touch = e.changedTouches.item(0);
+    if (touch) {
+      mouse.x = touch.clientX;
+  		mouse.y = touch.clientY;      
+    }    
+	}
+	app.touchend = function(e) {
+	  if(model.userTadpole) {
+			model.userTadpole.targetMomentum = 0;
+		}
+	}
+	app.touchmove = function(e) {
+	  e.preventDefault();
+    
+    var touch = e.changedTouches.item(0);
+    if (touch) {
+      mouse.x = touch.clientX;
+  		mouse.y = touch.clientY;      
+    }		
+	}
 	
 	
 	app.resize = function(e) {
@@ -135,6 +163,7 @@ var App = function(aCanvas) {
 		resizeCanvas();
 		
 		model = new Model();
+		model.settings = aSettings;
 		
 		model.userTadpole = new Tadpole();
 		model.userTadpole.id = -1;
@@ -149,7 +178,7 @@ var App = function(aCanvas) {
 		
 		model.arrows = {};
 		
-		webSocket 				= new WebSocket('ws://rumpetroll.six12.co:8180');
+		webSocket 				= new WebSocket( model.settings.socketServer );
 		webSocket.onopen 		= app.onSocketOpen;
 		webSocket.onclose		= app.onSocketClose;
 		webSocket.onmessage 	= app.onSocketMessage;
