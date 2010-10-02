@@ -25,6 +25,12 @@ document.addEventListener('mousemove', app.mousemove);
 document.addEventListener('mousedown', app.mousedown);
 document.addEventListener('mouseup', app.mouseup);
 
+document.addEventListener('touchstart',   app.touchstart );
+document.addEventListener('touchend',     app.touchend );
+document.addEventListener('touchcancel',  app.touchend );
+document.addEventListener('touchmove',    app.touchmove );
+
+
 setInterval(runLoop,30);
 
 var addStats = function() {
