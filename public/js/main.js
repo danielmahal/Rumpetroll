@@ -19,16 +19,16 @@ var runLoop = function() {
 
 var app = new App(settings, document.getElementById('canvas'));
 
-window.addEventListener('resize', app.resize);
+window.addEventListener('resize', app.resize, false);
 
-document.addEventListener('mousemove', app.mousemove);
-document.addEventListener('mousedown', app.mousedown);
-document.addEventListener('mouseup', app.mouseup);
+document.addEventListener('mousemove', app.mousemove, false);
+document.addEventListener('mousedown', app.mousedown, false);
+document.addEventListener('mouseup', app.mouseup, false);
 
-document.addEventListener('touchstart',   app.touchstart );
-document.addEventListener('touchend',     app.touchend );
-document.addEventListener('touchcancel',  app.touchend );
-document.addEventListener('touchmove',    app.touchmove );
+document.addEventListener('touchstart',   app.touchstart, false);
+document.addEventListener('touchend',     app.touchend, false);
+document.addEventListener('touchcancel',  app.touchend, false);
+document.addEventListener('touchmove',    app.touchmove, false);
 
 
 setInterval(runLoop,30);

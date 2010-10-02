@@ -67,16 +67,15 @@ var App = function(aSettings, aCanvas) {
 			model.arrows[i].draw(context, canvas);
 		}
 	};
-	
-	
+		
 	
 	
 	app.onSocketOpen = function(e) {
-		console.log('Socket opened!', e);
+		//console.log('Socket opened!', e);
 	};
 	
 	app.onSocketClose = function(e) {
-		console.log('Socket closed!', e);
+		//console.log('Socket closed!', e);
 		webSocketService.connectionClosed();
 	};
 	
