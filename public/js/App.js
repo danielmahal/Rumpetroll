@@ -141,7 +141,7 @@ var App = function(aCanvas) {
 		model.tadpoles[model.userTadpole.id] = model.userTadpole;
 		
 		model.waterParticles = [];
-		for(var i = 0; i < 200; i++) {
+		for(var i = 0; i < 150; i++) {
 			model.waterParticles.push(new WaterParticle());
 		}
 		

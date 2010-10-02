@@ -19,19 +19,11 @@ var Tadpole = function() {
 	this.messages = [];
 	this.timeSinceLastActivity = 0;
 	
-	this.tail = [];
-	var animationRate = 0;
-	
-	var tadpoleForce = 1;
-	var tadpoleDistanceFalloff = 1.8;
-	
 	this.changed = 0;
 	this.timeSinceLastServerUpdate = 0;
 	
 	this.update = function(tadpoles) {
 		tadpole.timeSinceLastServerUpdate++;
-		
-		animationRate += (.2 + tadpole.momentum / 10);
 		
 		tadpole.x += Math.cos(tadpole.angle) * tadpole.momentum;
 		tadpole.y += Math.sin(tadpole.angle) * tadpole.momentum;
@@ -50,6 +42,8 @@ var Tadpole = function() {
 				tadpole.messages.splice(i,1);
 			}
 		}
+		
+		tadpole.tail.update();
 	};
 	
 	
@@ -102,7 +96,7 @@ var Tadpole = function() {
 		context.beginPath();
 		context.arc(tadpole.x, tadpole.y, tadpole.size, tadpole.angle + Math.PI * 2.7, tadpole.angle + Math.PI * 1.3, true); 
 		
-		drawTail(context);
+		tadpole.tail.draw(context);
 		
 		context.closePath();
 		context.fill();
@@ -112,58 +106,6 @@ var Tadpole = function() {
 		
 		drawName(context);
 		drawMessages(context);
-	};
-	
-	var drawTail = function(context) {
-		
-		var jointSpacing = 1.4;
-		var path1 = [];
-		var path2 = [];
-		
-		for(var i = 0, len = tadpole.tail.length; i < len; i++) {
-			var tailJoint = tadpole.tail[i];
-			var parentJoint = tadpole.tail[i-1] || tadpole;
-			var anglediff = (parentJoint.angle - tailJoint.angle);
-			
-			while(anglediff < -Math.PI) {
-				anglediff += Math.PI * 2;
-			}
-			while(anglediff > Math.PI) {
-				anglediff -= Math.PI * 2;
-			}
-			
-			var falloff = (tadpole.tail.length - i) / tadpole.tail.length;
-			var jointSize =  (tadpole.size - 1.8) * falloff;
-			
-			tailJoint.angle += anglediff * (jointSpacing * 3 + (Math.min(tadpole.momentum / 2, Math.PI * 1.8))) / 8;
-			tailJoint.angle += Math.cos(animationRate - (i / 3)) * ((tadpole.momentum + .3) / 40);
-			
-			if(i == 0) {
-				tailJoint.x = parentJoint.x + Math.cos(tailJoint.angle + Math.PI) * 5;
-				tailJoint.y = parentJoint.y + Math.sin(tailJoint.angle + Math.PI) * 5;
-			} else {
-				tailJoint.x = parentJoint.x + Math.cos(tailJoint.angle + Math.PI) * jointSpacing;
-				tailJoint.y = parentJoint.y + Math.sin(tailJoint.angle + Math.PI) * jointSpacing;
-			}
-			
-			
-			var x1 = tailJoint.x + Math.cos(tailJoint.angle + Math.PI * 1.5) * jointSize;
-			var y1 = tailJoint.y + Math.sin(tailJoint.angle + Math.PI * 1.5) * jointSize;
-			
-			var x2 = tailJoint.x + Math.cos(tailJoint.angle + Math.PI / 2) * jointSize;
-			var y2 = tailJoint.y + Math.sin(tailJoint.angle + Math.PI / 2) * jointSize;
-			
-			path1.push({x: x1, y: y1});
-			path2.push({x: x2, y: y2});
-		}
-		
-		for(var i = 0; i < path1.length; i++) {
-			context.lineTo(path1[i].x, path1[i].y);
-		}
-		path2.reverse();
-		for(var i = 0; i < path2.length; i++) {
-			context.lineTo(path2[i].x, path2[i].y);
-		}
 	};
 	
 	var drawName = function(context) {
@@ -184,12 +126,6 @@ var Tadpole = function() {
 	
 	// Constructor
 	(function() {
-		for(var i = 0; i < 20; i++) {
-			tadpole.tail.push({
-				x: 0,
-				y: 0,
-				angle: Math.PI * 2
-			});
-		}
+		tadpole.tail = new TadpoleTail(tadpole);
 	})();
 }

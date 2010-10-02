@@ -11,6 +11,7 @@ html{color:#000;background:#FFF;}body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pr
 html {
 	-webkit-user-select: none;
 	cursor: caret;
+	background: #000;
 }
 
 body {
@@ -18,7 +19,6 @@ body {
 	margin: 0;
 	padding: 0;
 	overflow: hidden;
-	background: #330033;
 	font-size: 62.5%;
 }
 
