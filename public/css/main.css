@@ -42,7 +42,7 @@ h2 {
 }
 
 a {
-	color: #aaa;
+	color: #c0fdf7;
 	text-decoration: none;
 }
 
@@ -92,13 +92,18 @@ p {
 	/*font-family: "Arial Rounded MT Bold";*/
 	display: none;
 	position: absolute;
-	top: 70px;
+	top: 200px;
 	left: 10px;
 	padding: 10px 20px;
-	color: rgba(255,255,255,0.6);
+	color: rgba(249,136,119,0.9);
 	width: 400px;
-	font-size: 1.4em;
+	font-size: 2em;
 	font-weight: bold;
+}
+
+#cant-connect a:link {
+	color: #c0fdf7;
+	text-decoration: underline;
 }
 
 #info {
