@@ -56,7 +56,7 @@ class TadpoleConnection
 	end
 	
 	def process_message(data)
-	  json = JSON.parse(data);
+	  json = JSON.parse(data) rescue {};
     
     case json["type"]
     when "update"
