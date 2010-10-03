@@ -1,0 +1,106 @@
+<!doctype html>
+<html>
+	<head>
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+		<title>Rumpetroll Benchmarker</title>		
+		<style type="text/css" media="screen">
+			p {
+				font-size:9px;
+				font-family:Verdana;
+				margin:0;
+				padding:0;
+			}			
+		</style>
+		
+		<script type="text/javascript" charset="utf-8">
+			
+			var SPAWN_INTERVAL = 100
+			var TEST_INTERVAL = 100
+			var TOTAL_TESTS = 50
+			var TOTAL_SPAWN = 300
+			var SERVER = 'ws://mini.local:8180';
+						
+			var Timer = function() {				
+				var startTime = new Date().getTime();
+				this.elapsed=function(){ return new Date().getTime()-startTime };
+			}			
+			function log(message) {
+				console.log(message);
+			}
+			
+			var count = 0;					
+			var BenchmarkingClient = function(){
+				var timer = new Timer()
+				var testID = count++;
+				var quota = TOTAL_TESTS;
+				var name = "Benchmarker "+testID;
+				
+				log("Connecting "+name);
+				
+				var socket = new WebSocket( SERVER );				
+								
+				var testUpdate = function() {
+					var x = (Math.random()*200).toFixed(1);
+					var y = (testID*30).toFixed(1);
+					var angle = (Math.random()*6.28).toFixed(3);
+					var momentum = 0; //(Math.random()*3).toFixed(3);
+									
+															
+					var json = '{"type":"update","x":"'+x+'","y":"'+y+'","angle":"'+angle+'","momentum":"'+momentum+'","name":"'+name+'"}';
+					socket.send(json);					
+				}
+				var testMessage = function() {
+			    var json = '{"type":"message","message":"Testing... '+name+', Tests left:'+quota+'"}';
+					socket.send(json);
+				}
+				
+				var testIterator = function() {
+					if (quota-- > 0) {
+						
+						testUpdate();
+						if (quota % 50 == 0) testMessage();
+						
+						setTimeout(testIterator,TEST_INTERVAL);
+					} else {
+						socket.close();
+					}
+				};
+				
+				socket.onopen	= function(e) {
+					log("Connected "+name+" t:"+timer.elapsed());
+					
+					testIterator();
+				};
+				
+				socket.onclose	= function(e) {
+					log("Disconnected "+name+" t:"+timer.elapsed());
+				};
+				
+				socket.onmessage	= function(e) {
+					try {
+					} catch(e) {}
+				};
+				
+			}
+			
+			var spawnQuota = TOTAL_SPAWN;
+			var timer = new Timer();
+			var spawnIterator = function() {
+				if (spawnQuota-- > 0) {
+					log("SPAWN AT "+timer.elapsed());
+					t = new BenchmarkingClient();
+					setTimeout(spawnIterator,SPAWN_INTERVAL);
+				}
+			};
+			
+			function startBenchmark() {
+				spawnIterator()
+			}
+												
+		</script>
+		
+	</head>
+	<body id="benchmarker" onload="startBenchmark()">			
+				<p>Rumpetroll - benchmark</p>
+	</body>
+</html>
