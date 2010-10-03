@@ -118,6 +118,12 @@ p {
 		margin: 20px 40px 20px 20px;
 		margin-right: 40px;
 	}
+		#info #wtf {
+			float: left;
+			margin-left: 30px;
+			margin-right: 40px;
+		}
+		
 		#info #share {
 			float: right;
 			margin-right: 40px;
