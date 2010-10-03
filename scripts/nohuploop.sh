@@ -2,6 +2,8 @@
 
 LOGFILE=data/daemon.out
 nohup ./scripts/launchloop.sh $* >> $LOGFILE &
-echo "** Starting launchloop on PID $! **"
-echo "Tailing $LOGFILE. Please make sure we have regular output:"
-tail -f ./data/daemon.out
+
+LOOPPID=$!
+
+echo "** Starting launchloop on PID $LOOPPID. Logging to $LOGFILE. **"
+echo "  NB! You should make sure only launchloop with PID $LOOPPID is running."
