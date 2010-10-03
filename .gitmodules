@@ -1,0 +1,6 @@
+[submodule "node/lib/socket.io"]
+	path = node/lib/socket.io
+	url = git://github.com/LearnBoost/Socket.IO-node.git
+[submodule "node/lib/websocket-server"]
+	path = node/lib/websocket-server
+	url = git://github.com/miksago/node-websocket-server.git

@@ -1,6 +1,17 @@
-var ws = require('./lib/ws')
+var http = require('http');
+var fs = require('fs');
 
-var server = ws.createServer();
+var ws = require('./lib/websocket-server/lib/ws');
+
+var httpServer = http.createServer(function(req, res) {
+	fs.readFile('client-ws.html', function(err, data) {
+		res.writeHead(200, {'Content-Type': 'text/html'});
+		res.write(data, 'utf-8');
+		res.end();
+	});
+});
+
+var server = ws.createServer(httpServer);
 
 server.addListener('listening', function() {
 	console.log(process.pid + ' listening for connections.');

@@ -3,7 +3,7 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title>Rumpetroll! — Node Test Client</title>
+		<title>Rumpetroll! — Node WebSocket Server Test Client</title>
 		<style type="text/css">
 			#container {
 				width: 500px;
@@ -35,12 +35,12 @@
 				return (value < 10 ? '0' : '') + value;
 			}
 		
-			var connection;
-			
 			var log = function(message) {
 				var now = new Date();
 				$('output').value += [pad(now.getHours()), pad(now.getMinutes()), pad(now.getSeconds())].join(':') + ' ' + message + '\n';
 			}
+			
+			var connection;
 			
 			var connect = function() {
 				connection = new WebSocket($('connect-url').value);
