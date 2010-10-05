@@ -12,7 +12,7 @@ var Message = function(msg) {
 	
 	this.draw = function(context,x,y,i) {
 		var fontsize = 8;
-		context.font = fontsize + "px Helvetica";
+		context.font = fontsize + "px 'proxima-nova-1','proxima-nova-2', arial, sans-serif";
 		context.textBaseline = 'hanging';
 		
 		var paddingH = 3;
