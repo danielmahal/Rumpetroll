@@ -9,9 +9,12 @@ require 'em-websocket'
 require 'json'
 require 'Tadpole.rb'
 require 'socket'
+require 'utils'
 
 
-DEV_MODE = ARGV[0] == "dev"
+DEV_MODE = ARGV.include? "--dev"
+VERBOSE_MODE = ARGV.include? "--verbose"
+
 WHITELIST = ["http://rumpetroll.com","http://dev.rumpetroll.com","http://www.rumpetroll.com","http://rumpetroll.six12.co"]
 
 class TadpoleConnection
@@ -56,7 +59,7 @@ class TadpoleConnection
 	end
 	
 	def process_message(data)
-	  json = JSON.parse(data);
+	  json = JSON.parse(data) rescue {};
     
     case json["type"]
     when "update"
@@ -90,14 +93,20 @@ class TadpoleConnection
 	
 end
 
+HOST = '0.0.0.0'
+PORT = 8180
+
+if is_port_open?(HOST, PORT)
+  STDERR.puts "ERROR: #{HOST}:#{PORT} is already open. Cannot start daemon."
+  exit 1
+end
+
 EventMachine.run do
-	host = '0.0.0.0'
-	port = 8180
 	channel = EM::Channel.new
 	
-	EventMachine::WebSocket.start(:host => host, :port => port, :debug => DEV_MODE) do |socket|
+	EventMachine::WebSocket.start(:host => HOST, :port => PORT, :debug => VERBOSE_MODE) do |socket|
 		TadpoleConnection.new(socket, channel)
 	end
 	
-	puts "Server started at #{host}:#{port}."
-end
+	puts "Server started at #{HOST}:#{PORT}."
+end 
