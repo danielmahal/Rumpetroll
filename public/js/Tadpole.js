@@ -109,7 +109,7 @@ var Tadpole = function() {
 	};
 	
 	var drawName = function(context) {
-		context.font = 7 + "px Helvetica";
+		context.font = 7 + "px 'proxima-nova-1','proxima-nova-2', arial, sans-serif";
 		context.textBaseline = 'hanging';
 		var width = context.measureText(tadpole.name).width;
 		context.fillText(tadpole.name, tadpole.x - width/2, tadpole.y + 8);
