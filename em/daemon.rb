@@ -83,11 +83,14 @@ class TadpoleConnection
 
   def message_handler(json)
     msg = json["message"]
-    msg = msg[0...45]        
+
+		if msg
+	    msg = msg[0...45]        
     
-    Message.create(:body => "#{msg}", :author => @tadpole.handle);  
+	    Message.create(:body => "#{msg}", :author => @tadpole.handle);  
         
-    broadcast( %({"type":"message","id":#{@tadpole.id},"message":#{ msg.to_json }}) )
+	    broadcast( %({"type":"message","id":#{@tadpole.id},"message":#{ msg.to_json }}) )
+		end
   end
   
 	
