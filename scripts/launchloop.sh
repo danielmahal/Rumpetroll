@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 PIDFILE=/tmp/tadpoleLaunchloop.pid
 echo $$ > $PIDFILE
