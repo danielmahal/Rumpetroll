@@ -83,7 +83,7 @@ class TadpoleConnection
   def update_handler(json)
     @tadpole.pos.x = json["x"]||0
     @tadpole.pos.y = json["y"]||0
-    @tadpole.handle = (json["name"] || "Guest #{@tadpole.id}")[0...45]
+    @tadpole.handle = (json["name"] || "Guest #{@tadpole.id}").to_s[0...45]
     @tadpole.angle = json["angle"]||0
     @tadpole.momentum = json["momentum"]||0
     @tadpole.drive.x  = json["vx"]||0
@@ -93,8 +93,7 @@ class TadpoleConnection
   end
 
   def message_handler(json)
-    msg = json["message"].to_s
-	  msg = msg[0...45]    
+    msg = json["message"].to_s[0...45]
 	  Message.create(:body => "#{msg}", :author => @tadpole.handle);          
 	  broadcast( %({"type":"message","id":#{@tadpole.id},"message":#{ msg.to_json }}) )
   end
