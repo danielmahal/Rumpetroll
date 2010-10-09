@@ -21,6 +21,9 @@ class TadpoleConnection
 	def initialize(socket, channel)
 		@socket = socket
 		@tadpole = Tadpole.new()
+		@last_update = 0;
+		@quota = 10;
+		
 						
 		socket.onopen {
 		  
@@ -58,13 +61,21 @@ class TadpoleConnection
 		@channel << message
 	end
 	
-	def process_message(data)
+	def detect_spam
+	  now = Time.now.to_f
+	  @quota -= 1 if now-@last_update < 0.3
+    @last_update = now
+    @socket.close_connection(true) if @quota < 0	 
+	end
+	
+	def process_message(data)	  	  	  
 	  json = JSON.parse(data) rescue {};
-    
+
     case json["type"]
     when "update"
       update_handler(json)
     when "message"  
+      detect_spam()
       message_handler(json)
     end      
   end
