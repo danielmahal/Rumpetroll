@@ -3,15 +3,6 @@ var settings = new Settings();
 var debug = false;
 var isStatsOn = false;
 
-var unsupportedAlert = 'This is an experiment that relies on the latest HTML5 features and may not work in some browsers';
-
-try {
-	if(!(Modernizr.canvas && Modernizr.websockets)) {
-		alert(unsupportedAlert);
-	}
-} catch(err) {
-	alert(unsupportedAlert);
-}
 
 var app;
 var runLoop = function() {
@@ -19,6 +10,7 @@ var runLoop = function() {
 	app.draw();
 }
 var initApp = function() {
+	if (app!=null) { return; }
 	app = new App(settings, document.getElementById('canvas'));
 
 	window.addEventListener('resize', app.resize, false);
@@ -35,7 +27,18 @@ var initApp = function() {
 	setInterval(runLoop,30);
 }
 
-initApp();
+var forceInit = function() {
+	initApp()
+	document.getElementById('unsupported-browser').style.display = "none";
+	return false;
+}
+
+if(Modernizr.canvas && Modernizr.websockets) {
+	initApp();
+} else {
+	document.getElementById('unsupported-browser').style.display = "block";	
+	document.getElementById('force-init-button').addEventListener('click', forceInit);
+}
 
 
 var addStats = function() {

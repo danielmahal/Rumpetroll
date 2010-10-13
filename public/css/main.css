@@ -107,6 +107,20 @@ p {
 	text-decoration: underline;
 }
 
+#unsupported-browser {
+	display: none;	
+	position: absolute;
+	z-index:2;	
+	background: #656564;
+	-webkit-border-radius: 20px;
+	top: 60%;
+	left: 50%;
+	width:400px;
+	margin:-200px;
+	padding:20px;
+	
+}
+
 #info {
 	position: absolute;
 	left: 0;
