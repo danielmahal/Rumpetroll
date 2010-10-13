@@ -3,12 +3,14 @@ var settings = new Settings();
 var debug = false;
 var isStatsOn = false;
 
+var unsupportedAlert = 'This is an experiment that relies on the latest HTML5 features and may not work in some browsers';
+
 try {
 	if(!(Modernizr.canvas && Modernizr.websockets)) {
-		alert('This is an experiment that relies on the latest HTML5 features and may not work in some browsers');
+		alert(unsupportedAlert);
 	}
 } catch(err) {
-	alert('This is an experiment that relies on the latest HTML5 features and may not work in some browsers');
+	alert(unsupportedAlert);
 }
 
 var runLoop = function() {
