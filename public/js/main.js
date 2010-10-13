@@ -4,11 +4,12 @@ var debug = false;
 var isStatsOn = false;
 
 try {
-	if(!window.Websocket) {
-		alert('This is an experiment that has only been tested in the latest versions of browsers that support WebSockets may not work in other browsers');
+	var ua = navigator.userAgent.toLowerCase();
+	if(ua.search('chrome') < 0 && ua.search('safari') < 0) {
+		alert('This is an experiment that has only been tested in Chrome, Safari and Firefox 4Beta, and may not work in other browsers');
 	}
 } catch(err) {
-	alert('This is an experiment that has only been tested in the latest versions of browsers that support WebSockets may not work in other browsers');
+	alert('This is an experiment that has only been tested in Chrome, Safari and Firefox 4Beta, and may not work in other browsers');
 }
 
 var runLoop = function() {
