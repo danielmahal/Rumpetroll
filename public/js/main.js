@@ -4,12 +4,11 @@ var debug = false;
 var isStatsOn = false;
 
 try {
-	var ua = navigator.userAgent.toLowerCase();
-	if(ua.search('chrome') < 0 && ua.search('safari') < 0) {
-		alert('This is an experiment that has only been tested in Chrome, Safari and Firefox 4Beta, and may not work in other browsers');
+	if(!(Modernizr.canvas && Modernizr.websockets)) {
+		alert('This is an experiment that relies on the latest HTML5 features and may not work in some browsers');
 	}
 } catch(err) {
-	alert('This is an experiment that has only been tested in Chrome, Safari and Firefox 4Beta, and may not work in other browsers');
+	alert('This is an experiment that relies on the latest HTML5 features and may not work in some browsers');
 }
 
 var runLoop = function() {
