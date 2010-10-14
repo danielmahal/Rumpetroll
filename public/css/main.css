@@ -46,8 +46,11 @@ a {
 	text-decoration: none;
 }
 
+
+
 	a:hover {
 		color: #fff;
+		text-decoration: underline;
 	}
 
 p {
@@ -108,18 +111,60 @@ p {
 }
 
 #unsupported-browser {
-	display: none;	
+/*	display: none;*/	
 	position: absolute;
 	z-index:2;	
-	background: #656564;
-	-webkit-border-radius: 20px;
+	background-color: #fff;
+	background-image: -moz-linear-gradient(top, #fff, #e2e2e2);
+	background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, #fff),color-stop(1, #e2e2e2));
+
+	-webkit-border-radius: 10px;
+	-webkit-box-shadow: 1px 1px 5px #000;
+	-moz-box-shadow: 1px 1px 5px #000;
+	box-shadow: 1px 1px 5px #000;
+	
 	top: 60%;
 	left: 50%;
-	width:400px;
+	width:420px;
 	margin:-200px;
-	padding:20px;
-	
+	padding:35px;
+	font-size: 1.5em;
+	border: 1px solid #fff;
 }
+
+#unsupported-browser p {
+	color: #000;
+	text-shadow: white 1px 1px 0;
+	line-height: 1.4em;
+}
+
+a#force-init-button {
+	font-size: .8em;
+	color: #e47c6c;
+	text-align: center;
+	font-weight: bold;
+	text-decoration: underline;
+}
+#unsupported-browser ul li  {
+	display: inline;
+	list-style-type: none;
+	padding-right: 10px;
+	font-weight: bold;
+	padding: 4px 10px 4px 10px;
+	background-color: #606061;
+	-webkit-border-radius: 100px;
+	-webkit-box-shadow:inset 1px 1px 5px #000;
+	-moz-box-shadow:inset 1px 1px 5px #000;
+	box-shadow:inset -1px -1px -5px #000;
+	text-shadow: none;
+	font-size: .8em;
+}
+
+#unsupported-browser ul   {
+	margin: 20px 0px 20px 0px;
+}
+
+
 
 #info {
 	position: absolute;
