@@ -111,7 +111,7 @@ p {
 }
 
 #unsupported-browser {
-/*	display: none;*/	
+  display: none;  
 	position: absolute;
 	z-index:2;	
 	background-color: #fff;
@@ -123,7 +123,7 @@ p {
 	-moz-box-shadow: 1px 1px 5px #000;
 	box-shadow: 1px 1px 5px #000;
 	
-	top: 60%;
+	top: 55%;
 	left: 50%;
 	width:420px;
 	margin:-200px;
@@ -139,12 +139,17 @@ p {
 }
 
 a#force-init-button {
-	font-size: .8em;
+	font-size: .6em;
 	color: #e47c6c;
 	text-align: center;
 	font-weight: bold;
 	text-decoration: underline;
 }
+a#force-init-button:hover {
+  color: #999;  
+}
+
+
 #unsupported-browser ul li  {
 	display: inline;
 	list-style-type: none;
