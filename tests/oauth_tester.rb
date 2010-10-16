@@ -2,13 +2,12 @@
 
 require "../em/twitterOauth.rb"
 require "yaml"
-require "syslog"
 
 settings = File.open( '../data/settings.yaml' ) { |yf| YAML::load( yf ) } 
 
 rumpetrollApp = TwitterApp.new(settings["twitter"]["appKey"],settings["twitter"]["appSecret"])
 
-TOKENS_FILE = "tokens1.yaml"
+TOKENS_FILE = "tokens.yaml"
 
 if File.exists? TOKENS_FILE
   tokens = File.open( TOKENS_FILE ) { |yf| YAML::load( yf ) }
