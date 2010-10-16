@@ -102,7 +102,7 @@ class TadpoleConnection
 end
 
 HOST = '0.0.0.0'
-PORT = 8180
+PORT = DEV_MODE ? 8181 : 8180
 
 if is_port_open?(HOST, PORT)
   STDERR.puts "ERROR: #{HOST}:#{PORT} is already open. Cannot start daemon."
