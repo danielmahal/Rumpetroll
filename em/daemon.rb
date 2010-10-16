@@ -10,6 +10,7 @@ require 'json'
 require 'Tadpole.rb'
 require 'socket'
 require 'utils'
+require 'syslog'
 
 
 DEV_MODE = ARGV.include? "--dev"
@@ -30,12 +31,13 @@ class TadpoleConnection
 		  origin = socket.request["Origin"]		  
       port, ip = Socket.unpack_sockaddr_in(socket.get_peername)                          	                	  
       
-      puts "Connection ##{@tadpole.id } from: #{ip}:#{port} at #{origin}" 
+      Syslog.info "Connection ##{@tadpole.id } from: #{ip}:#{port} at #{origin}" 
              	  
   	  if WHITELIST.include?(origin) || DEV_MODE
   		  @socket.send(%({"type":"welcome","id":#{@tadpole.id}}))
   		  subscribe(channel)
 	    else
+	      Syslog.warning("Connection ##{@tadpole.id } from: #{ip}:#{port} at #{origin} did not match whitelist" )
 	      socket.close_connection 
       end            
 		  		  
@@ -52,7 +54,7 @@ class TadpoleConnection
 		
 	def unsubscribe()
 	  broadcast %({"type":"closed","id":#{@tadpole.id}})    
-	  puts "Disconnect ##{@tadpole.id }"
+	  Syslog.info "Disconnect ##{@tadpole.id }"
 		@channel.unsubscribe(@id)
 	end
 		
@@ -101,20 +103,33 @@ class TadpoleConnection
 	
 end
 
+Syslog.open("rumpetrolld")
+
 HOST = '0.0.0.0'
 PORT = DEV_MODE ? 8181 : 8180
-
+  
 if is_port_open?(HOST, PORT)
-  STDERR.puts "ERROR: #{HOST}:#{PORT} is already open. Cannot start daemon."
+  msg = "ERROR: #{HOST}:#{PORT} is already open. Cannot start daemon."
+  Syslog.err msg
+  STDERR.puts msg
   exit 1
 end
 
-EventMachine.run do
-	channel = EM::Channel.new
-	
-	EventMachine::WebSocket.start(:host => HOST, :port => PORT, :debug => VERBOSE_MODE) do |socket|
-		TadpoleConnection.new(socket, channel)
-	end
-	
-	puts "Server started at #{HOST}:#{PORT}."
-end 
+begin
+  
+  EventMachine.run do
+  	channel = EM::Channel.new
+  	
+  	EventMachine::WebSocket.start(:host => HOST, :port => PORT, :debug => VERBOSE_MODE) do |socket|
+  		TadpoleConnection.new(socket, channel)
+  	end
+  	
+  	Syslog.notice "Server started at #{HOST}:#{PORT}."
+  end 
+
+rescue Exception => e
+  Syslog.err "#{e} AT: #{e.backtrace.join(",")}"
+ensure
+  Syslog.close()
+end
+
