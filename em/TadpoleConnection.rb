@@ -1,3 +1,8 @@
+require 'storage'
+require 'json'
+require 'Tadpole.rb'
+
+
 class TadpoleConnection
 
       

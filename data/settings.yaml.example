@@ -2,6 +2,15 @@
 # For security reasons, settings.yaml is not part of the repository.
 # You may use this file as a base for setting up your own settings file.
 
+websockets:
+   port:       8180
+   devPort:    8181
+   originWhitelist:
+      - "http://rumpetroll.com"
+      - "http://dev.rumpetroll.com"
+      - "http://www.rumpetroll.com"
+      - "http://rumpetroll.six12.co"
+
 twitter:
   appKey:     "appKeyHere"
   appSecret:  "appSecretHere"

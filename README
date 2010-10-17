@@ -1,0 +1,28 @@
+Rumpetrolls it's a HTML5 massive-multiplayer experiment started
+by Daniel Mahal, Hans Petter Eikemo, Hugo Ahlberg and Simen Brekken.
+
+Running live at http://rumpetroll.com
+Full source available at http://github.com/danielmahal/Rumpetroll
+
+
+
+Event Machine WebSocket Server implementation
+---------------------------------------------
+
+Before launching the server. Make sure you create and edit
+settings.yaml. For security reasons you should never add 
+settings.yaml to a public repository.
+	
+	mv data/settings.yaml.example data/settings.yaml
+
+Run server by executing em/daemon.rb
+
+Optional arguments:
+	--dev					Launch server and accept connections from any origin.
+	--verbose			Set EventMachine WebSockets to debug mode.
+	
+	
+Ruby libraries used:
+
+EventMachine
+em-websockets
