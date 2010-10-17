@@ -10,6 +10,7 @@ require 'utils'
 require 'syslog'
 require 'settings'
 
+
 settings = Settings.new('data/settings.yaml')
 
 DEV_MODE = ARGV.include? "--dev"
@@ -50,6 +51,7 @@ begin
 
 rescue Exception => e
   Syslog.err "#{e} at: #{e.backtrace.join(", ")}"
+  STDERR.puts e,e.backtrace
 ensure
   Syslog.notice "Server closed."
   Syslog.close()

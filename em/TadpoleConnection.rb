@@ -2,27 +2,20 @@ require 'storage'
 require 'json'
 require 'Tadpole.rb'
 
-
 class TadpoleConnection
 
-      
 	def initialize(socket, channel)
 		@socket = socket
 		@tadpole = Tadpole.new()
 		@last_update = 0;
 		@quota = 10;
-		
-						
-		socket.onopen {
-		  		  
+								
+		socket.onopen {		  		  
 		  origin = socket.request["Origin"]
-      port, ip = Socket.unpack_sockaddr_in(socket.get_peername)                          	                	  
-      
-      Syslog.info "Connection ##{@tadpole.id } from: #{ip}:#{port} at #{origin}" 
-             	  	      
+      port, ip = Socket.unpack_sockaddr_in(socket.get_peername)
+      Syslog.info "Connection ##{@tadpole.id } from: #{ip}:#{port} at #{origin}"
   		@socket.send(%({"type":"welcome","id":#{@tadpole.id}}))
   		subscribe(channel)
-		  		  
 		}		
 		
 	end
@@ -41,7 +34,6 @@ class TadpoleConnection
 	end
 		
 	def broadcast(message)
-		# Broadcast message from client
 		@channel << message
 	end
 	
@@ -65,20 +57,22 @@ class TadpoleConnection
   end
 
   def update_handler(json)
-    @tadpole.pos.x = json["x"]||0
-    @tadpole.pos.y = json["y"]||0
-    @tadpole.handle = (json["name"] || "Guest #{@tadpole.id}").to_s[0...70]
-    @tadpole.angle = json["angle"]||0
+    @tadpole.pos.x    = json["x"]||0
+    @tadpole.pos.y    = json["y"]||0
+    @tadpole.angle    = json["angle"]||0
     @tadpole.momentum = json["momentum"]||0
-    @tadpole.drive.x  = json["vx"]||0
-    @tadpole.drive.y  = json["vy"]||0        
+    @tadpole.handle   = (json["name"] || "Guest #{@tadpole.id}").to_s[0...70]
     
     broadcast @tadpole.to_json
   end
 
   def message_handler(json)
     msg = json["message"].to_s[0...70]
-	  Message.create(:body => "#{msg}", :author => @tadpole.handle);          
+    
+    EventMachine.defer {
+      Message.create(:body => "#{msg}", :author => @tadpole.handle);
+    }    
+	  
 	  broadcast( %({"type":"message","id":#{@tadpole.id},"message":#{ msg.to_json }}) )
   end
   	
