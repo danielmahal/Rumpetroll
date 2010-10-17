@@ -1,18 +1,26 @@
 require 'storage'
 require 'json'
 require 'Tadpole.rb'
+require 'mongo'
 
 class TadpoleConnection
 
-	def initialize(socket, channel)
+	def initialize(socket, channel, db)
 		@socket = socket
+		@db_connections = db.collection('connections')
+		@connection_doc = { :start => Time.new  }
 		@tadpole = Tadpole.new()
 		@last_update = 0;
 		@quota = 10;
 								
-		socket.onopen {		  		  
+		socket.onopen {
+		  		  		  
 		  origin = socket.request["Origin"]
       port, ip = Socket.unpack_sockaddr_in(socket.get_peername)
+
+      @connection_doc[:ip] = ip
+      @db_connections.insert( @connection_doc )
+      
       Syslog.info "Connection ##{@tadpole.id } from: #{ip}:#{port} at #{origin}"
   		@socket.send(%({"type":"welcome","id":#{@tadpole.id}}))
   		subscribe(channel)
@@ -29,6 +37,8 @@ class TadpoleConnection
 		
 	def unsubscribe()
 	  broadcast %({"type":"closed","id":#{@tadpole.id}})    
+	  @connection_doc[:end] = Time.new.to_f
+	  @db_connections.update({ "_id" => @connection_doc["_id"] }, @connection_doc)
 	  Syslog.info "Disconnect ##{@tadpole.id }"
 		@channel.unsubscribe(@id)
 	end
