@@ -1,4 +1,4 @@
-Rumpetrolls it's a HTML5 massive-multiplayer experiment started
+Rumpetroll is a HTML5 massive-multiplayer experiment started
 by Daniel Mahal, Hans Petter Eikemo, Hugo Ahlberg and Simen Brekken.
 
 Running live at http://rumpetroll.com
@@ -18,11 +18,12 @@ settings.yaml to a public repository.
 Run server by executing em/daemon.rb
 
 Optional arguments:
-	--dev					Launch server and accept connections from any origin.
-	--verbose			Set EventMachine WebSockets to debug mode.
+	--dev	Launch server and accept connections from any origin.
+	--verbose	Set EventMachine WebSockets to debug mode.
 	
 	
-Ruby libraries used:
+Libraries used:
 
-EventMachine
-em-websockets
+EventMachine	http://rubyeventmachine.com/	
+em-websockets	http://github.com/igrigorik/em-websocket
+oauth-ruby	http://oauth.rubyforge.org/, http://github.com/oauth/oauth-ruby
