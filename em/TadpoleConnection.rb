@@ -8,8 +8,6 @@ class TadpoleConnection
 		@socket = socket
 		@storage = storage
 
-		@connection_doc = { :start => Time.new  }
-		
 		@tadpole = Tadpole.new()
 		@last_update = 0;
 		@quota = 10;
