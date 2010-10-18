@@ -69,8 +69,11 @@ class TadpoleConnection
     @tadpole.pos.x    = json["x"].to_f rescue 0
     @tadpole.pos.y    = json["y"].to_f rescue 0
     @tadpole.angle    = json["angle"].to_f rescue 0
-    @tadpole.momentum = json["momentum"].to_f rescue 0
-    @tadpole.handle   = (json["name"] || "Guest #{@tadpole.id}").to_s[0...70]
+    @tadpole.momentum = json["momentum"].to_f rescue 0    
+    
+    name = json["name"]
+    name = nil if name && name.include?("@")    
+    @tadpole.handle   = (@tadpole.authorized || name || "Guest #{@tadpole.id}").to_s[0...70]
     
     broadcast @tadpole.to_json
   end
@@ -84,17 +87,30 @@ class TadpoleConnection
   end
   
   def authorize_handler(json)    
-        
-    if json["verifier"]
-      puts "GOT token  '#{json["token"]}' and verifier '#{json["verifier"]}'"
-      #TODO: check request token with database and request access token.
+    #TODO: refactor.
+    if json["token"]
+      @storage.retrieveSecret(json["token"]) do |secret|
+        EventMachine.defer proc {                
+          tokens = OAuthTokens.new()
+          tokens.request_token    = json["token"]
+          tokens.request_verifier = json["verifier"]
+          tokens.request_secret   = secret
+          auth = generateTwitterAuthenticator(tokens)
+          auth.request(:get,"/1/account/verify_credentials.json")
+        }, proc { |credentials|
+          json = JSON.parse(credentials.body) rescue {};
+      	  @tadpole.authorized = "@#{json["screen_name"]}"
+      	  Syslog.info("Authenticated ##{@tadpole.id } as #{@tadpole.authorized}")
+        }        
+      end
     else
-      #TODO: refactor.
       EventMachine.defer proc {
-        generateTwitterAuthenticator().generate_authorize_url()
-      } , proc { |auth_url|             
+        auth = generateTwitterAuthenticator()
+        url = auth.generate_authorize_url()
+        return auth, url
+      } , proc { |args| auth,auth_url = args             
         @socket.send(%({"type":"redirect","url":#{ auth_url.to_json }}))
-        #TODO: Store request token and secret in database.
+        @storage.storeSecret(auth.tokens.request_token, auth.tokens.request_secret)
       }
     end
   end

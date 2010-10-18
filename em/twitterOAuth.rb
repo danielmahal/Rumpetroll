@@ -41,6 +41,7 @@ class TwitterAuthorization
   def generate_authorize_url(options={})
     options[:oauth_callback] ||= @app.default_callback
     request_token = @consumer.get_request_token( options )
+    @tokens.request_token = request_token.token
     @tokens.request_secret = request_token.secret
     request_token.authorize_url
   end

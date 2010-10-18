@@ -27,10 +27,8 @@ var WebSocketService = function(model, webSocket) {
 		
 		var tadpole = model.tadpoles[data.id];
 		
-		if(tadpole.id == model.userTadpole.id) {
-			if(!model.userTadpole.name) {
-				tadpole.name = data.name;
-			}
+		if(tadpole.id == model.userTadpole.id) {			
+			tadpole.name = data.name;
 			return;
 		} else {
 			tadpole.name = data.name;
