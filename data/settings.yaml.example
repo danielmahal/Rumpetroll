@@ -14,3 +14,4 @@ websockets:
 twitter:
   appKey:     "appKeyHere"
   appSecret:  "appSecretHere"
+  callback:   "http://rumpetroll.com"

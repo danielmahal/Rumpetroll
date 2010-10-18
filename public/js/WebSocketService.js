@@ -66,6 +66,12 @@ var WebSocketService = function(model, webSocket) {
 		}
 	}
 	
+	this.redirectHandler = function(data) {
+		if (data.url) {
+			document.location = data.url
+		}
+	}
+	
 	this.processMessage = function(data) {
 		var fn = webSocketService[data.type + 'Handler'];
 		if (fn) {
@@ -106,6 +112,15 @@ var WebSocketService = function(model, webSocket) {
 			message: msg
 		};
 		
+		webSocket.send(JSON.stringify(sendObj));
+	}
+	
+	this.authorize = function(token,verifier) {
+		var sendObj = {
+			type: 'authorize',
+			token: token,
+			verifier: verifier
+		};
 		webSocket.send(JSON.stringify(sendObj));
 	}
 }

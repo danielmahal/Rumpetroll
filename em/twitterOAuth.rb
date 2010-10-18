@@ -13,14 +13,15 @@ end
 
 class TwitterApp
   
-  attr_reader :key,:secret,:options  
+  attr_reader :key,:secret,:options
+  attr_accessor :default_callback
   
-  def initialize(key,secret,&options)
+  def initialize(key,secret,options={})
     @key = key
     @secret = secret
     @options = {
       :site=>"https://api.twitter.com"
-    }.merge(options||{})    
+    }.merge(options)    
   end
   
 end
@@ -31,12 +32,14 @@ class TwitterAuthorization
 
   def initialize(app,tokens=nil)
     
-    @consumer = OAuth::Consumer.new(app.key,app.secret,app.options)
+    @app      = app
     @tokens   = tokens || OAuthTokens.new()
+    @consumer = OAuth::Consumer.new(app.key,app.secret,app.options)
     
   end
   
   def generate_authorize_url(options={})
+    options[:oauth_callback] ||= @app.default_callback
     request_token = @consumer.get_request_token( options )
     @tokens.request_secret = request_token.secret
     request_token.authorize_url

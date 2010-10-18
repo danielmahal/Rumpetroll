@@ -75,6 +75,13 @@ var App = function(aSettings, aCanvas) {
 	
 	app.onSocketOpen = function(e) {
 		//console.log('Socket opened!', e);
+		
+		//FIXIT: Proof of concept. refactor!
+		uri = parseUri(document.location)
+		if ( uri.queryKey.oauth_token ) {
+			app.authorize(uri.queryKey.oauth_token, uri.queryKey.oauth_verifier)						
+		}
+		// end of proof of concept code.
 	};
 	
 	app.onSocketClose = function(e) {
@@ -96,6 +103,10 @@ var App = function(aSettings, aCanvas) {
 	    webSocketService.sendMessage(msg);
 	  }
 	  
+	}
+	
+	app.authorize = function(token,verifier) {
+		webSocketService.authorize(token,verifier);
 	}
 	
 	app.mousedown = function(e) {

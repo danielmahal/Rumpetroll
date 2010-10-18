@@ -60,7 +60,9 @@ class TadpoleConnection
     when "message"  
       detect_spam()
       message_handler(json)
-    end
+    when "authorize"
+      authorize_handler(json)
+    end    
   end
 
   def update_handler(json)
@@ -79,6 +81,22 @@ class TadpoleConnection
     @storage.message(msg,@tadpole)
         	  
 	  broadcast( %({"type":"message","id":#{@tadpole.id},"message":#{ msg.to_json }}) )
+  end
+  
+  def authorize_handler(json)    
+        
+    if json["verifier"]
+      puts "GOT token  '#{json["token"]}' and verifier '#{json["verifier"]}'"
+      #TODO: check request token with database and request access token.
+    else
+      #TODO: refactor.
+      EventMachine.defer proc {
+        generateTwitterAuthenticator().generate_authorize_url()
+      } , proc { |auth_url|             
+        @socket.send(%({"type":"redirect","url":#{ auth_url.to_json }}))
+        #TODO: Store request token and secret in database.
+      }
+    end
   end
   	
 end

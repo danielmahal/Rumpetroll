@@ -9,6 +9,7 @@ require 'em-mongo'
 require 'mongo'
 require 'ConnectionStorage.rb'
 require 'TadpoleConnection.rb'
+require 'twitterOAuth'
 require 'utils'
 require 'syslog'
 require 'settings'
@@ -18,6 +19,15 @@ settings = Settings.new('data/settings.yaml')
 
 DEV_MODE = ARGV.include? "--dev"
 VERBOSE_MODE = ARGV.include? "--verbose"
+
+
+# TODO: refactor.
+RAPP = TwitterApp.new(settings[:twitter,:appKey],settings[:twitter,:appSecret])
+RAPP.default_callback = settings[:twitter,:callback]
+def generateTwitterAuthenticator(tokens=nil)
+  TwitterAuthorization.new(RAPP,tokens) 
+end
+
 
 HOST = '0.0.0.0'
 PORT = DEV_MODE ? settings[:websockets,:devPort] : settings[:websockets,:port]
@@ -53,7 +63,7 @@ begin
 	      socket.close_connection
   	  end  	    		  		
   	end
-  	  	
+    
   	Syslog.notice "Server started at #{HOST}:#{PORT}."
   end 
 

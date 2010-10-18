@@ -10,7 +10,8 @@ class Tadpole
                 :pos,
                 :momentum,
                 :angle,
-                :handle
+                :handle,
+                :authorized
   
   def initialize()
     @id = @@count += 1
@@ -21,6 +22,7 @@ class Tadpole
     @life = 1;
     @angle = 0;
     @momentum = 0;
+    @authorized = nil;
   end
   
   ##def update()   
