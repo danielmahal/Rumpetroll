@@ -6,10 +6,11 @@ $: << File.dirname(__FILE__)
 require 'rubygems'
 require 'em-websocket'
 require 'em-mongo'
+require 'em-twitter'
 require 'mongo'
 require 'ConnectionStorage.rb'
 require 'TadpoleConnection.rb'
-require 'twitterOAuth'
+require 'twitterOAuth.rb'
 require 'utils'
 require 'syslog'
 require 'settings'
@@ -19,14 +20,6 @@ settings = Settings.new('data/settings.yaml')
 
 DEV_MODE = ARGV.include? "--dev"
 VERBOSE_MODE = ARGV.include? "--verbose"
-
-
-# TODO: refactor.
-RAPP = TwitterApp.new(settings[:twitter,:appKey],settings[:twitter,:appSecret])
-RAPP.default_callback = settings[:twitter,:callback]
-def generateTwitterAuthenticator(tokens=nil)
-  TwitterAuthorization.new(RAPP,tokens) 
-end
 
 
 HOST = '0.0.0.0'
@@ -45,6 +38,10 @@ end
 mongodb = Mongo::Connection.new.db("rumpetroll")
 messages = mongodb["messages"]
 messages.create_index([["location", Mongo::GEO2D]])
+
+EM::Twitter::application = TwitterApp.new(settings[:twitter,:appKey],settings[:twitter,:appSecret],settings[:twitter,:callback])
+EM::Twitter::storage     = mongodb["twitter"]
+
 
 begin
       

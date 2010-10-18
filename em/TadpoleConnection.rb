@@ -86,32 +86,17 @@ class TadpoleConnection
 	  broadcast( %({"type":"message","id":#{@tadpole.id},"message":#{ msg.to_json }}) )
   end
   
-  def authorize_handler(json)    
-    #TODO: refactor.
+  def authorize_handler(json)
     if json["token"]
-      @storage.retrieveSecret(json["token"]) do |secret|
-        EventMachine.defer proc {                
-          tokens = OAuthTokens.new()
-          tokens.request_token    = json["token"]
-          tokens.request_verifier = json["verifier"]
-          tokens.request_secret   = secret
-          auth = generateTwitterAuthenticator(tokens)
-          auth.request(:get,"/1/account/verify_credentials.json")
-        }, proc { |credentials|
-          json = JSON.parse(credentials.body) rescue {};
-      	  @tadpole.authorized = "@#{json["screen_name"]}"
-      	  Syslog.info("Authenticated ##{@tadpole.id } as #{@tadpole.authorized}")
-        }        
-      end
-    else
-      EventMachine.defer proc {
-        auth = generateTwitterAuthenticator()
-        url = auth.generate_authorize_url()
-        return auth, url
-      } , proc { |args| auth,auth_url = args             
-        @socket.send(%({"type":"redirect","url":#{ auth_url.to_json }}))
-        @storage.storeSecret(auth.tokens.request_token, auth.tokens.request_secret)
+      EM::Twitter.verifyRequest(json["token"],json["verifier"]) { |response|
+        if response
+          json = JSON.parse(response.body) rescue {};
+          @tadpole.authorized = "@#{json["screen_name"]}"
+    	    Syslog.info("Authenticated ##{@tadpole.id } as #{@tadpole.authorized}")
+  	    end
       }
+    else           
+      EM::Twitter.getRequest { |auth| @socket.send(%({"type":"redirect","url":#{ auth.authorize_url.to_json }})) }
     end
   end
   	

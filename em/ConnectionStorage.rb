@@ -37,16 +37,4 @@ class ConnectionStorage
     })
   end
   
-  def storeSecret(token,secret) 
-    @secrets.insert( { :token => token, :secret => secret } )
-  end
-  def retrieveSecret(token, &block)
-    @secrets.find({ :token => token}) do |result|
-      doc = result.first
-      if doc
-        block.call( doc["secret"] )
-        @secrets.remove(doc)
-      end
-    end    
-  end
 end
