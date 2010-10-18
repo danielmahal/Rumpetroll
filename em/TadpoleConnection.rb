@@ -5,10 +5,12 @@ require 'mongo'
 
 class TadpoleConnection
 
-	def initialize(socket, channel, db)
+	def initialize(socket, channel, storage)
 		@socket = socket
-		@db_connections = db.collection('connections')
+		@storage = storage
+
 		@connection_doc = { :start => Time.new  }
+		
 		@tadpole = Tadpole.new()
 		@last_update = 0;
 		@quota = 10;
@@ -17,9 +19,8 @@ class TadpoleConnection
 		  		  		  
 		  origin = socket.request["Origin"]
       port, ip = Socket.unpack_sockaddr_in(socket.get_peername)
-
-      @connection_doc[:ip] = ip
-      @db_connections.insert( @connection_doc )
+            
+      @storage.connected(ip)
       
       Syslog.info "Connection ##{@tadpole.id } from: #{ip}:#{port} at #{origin}"
   		@socket.send(%({"type":"welcome","id":#{@tadpole.id}}))
@@ -36,9 +37,8 @@ class TadpoleConnection
 	end
 		
 	def unsubscribe()
-	  broadcast %({"type":"closed","id":#{@tadpole.id}})    
-	  @connection_doc[:end] = Time.new.to_f
-	  @db_connections.update({ "_id" => @connection_doc["_id"] }, @connection_doc)
+	  @storage.disconnected()
+	  broadcast %({"type":"closed","id":#{@tadpole.id}})
 	  Syslog.info "Disconnect ##{@tadpole.id }"
 		@channel.unsubscribe(@id)
 	end
@@ -63,7 +63,7 @@ class TadpoleConnection
     when "message"  
       detect_spam()
       message_handler(json)
-    end      
+    end
   end
 
   def update_handler(json)

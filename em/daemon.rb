@@ -7,6 +7,7 @@ require 'rubygems'
 require 'em-websocket'
 require 'em-mongo'
 require 'mongo'
+require 'ConnectionStorage.rb'
 require 'TadpoleConnection.rb'
 require 'utils'
 require 'syslog'
@@ -31,17 +32,16 @@ if is_port_open?(HOST, PORT)
   exit 1  
 end
 
-
 #mongodb = Mongo::Connection.new.db("rumpetroll")
 #connections = mongodb["connections"]
-#connections.find().each do |doc|
+#connections.find({  }).each do |doc|
 #  puts doc.inspect
 #end
 
-
 begin
+      
   Syslog.open("rumpetrolld")  
-  EventMachine.run do
+  EventMachine.run do        
     db = EM::Mongo::Connection.new.db('rumpetroll')
   	channel = EM::Channel.new
   	
@@ -49,14 +49,13 @@ begin
   	  port, ip = Socket.unpack_sockaddr_in(socket.get_peername)
       origin = socket.request["Origin"]
   	  if WHITELIST.include?(origin) || DEV_MODE
-  	    TadpoleConnection.new(socket, channel, db)
+  	    TadpoleConnection.new(socket, channel, ConnectionStorage.new(db))
   	  else
   	    Syslog.warning("Connection from: #{ip}:#{port} at #{origin} did not match whitelist" )
 	      socket.close_connection
-  	  end  	  
-  		
+  	  end  	    		  		
   	end
-  	
+  	  	
   	Syslog.notice "Server started at #{HOST}:#{PORT}."
   end 
 
@@ -67,4 +66,3 @@ ensure
   Syslog.notice "Server closed."
   Syslog.close()
 end
-
