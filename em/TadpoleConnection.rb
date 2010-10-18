@@ -1,4 +1,3 @@
-require 'storage'
 require 'json'
 require 'Tadpole.rb'
 require 'mongo'
@@ -67,10 +66,10 @@ class TadpoleConnection
   end
 
   def update_handler(json)
-    @tadpole.pos.x    = json["x"]||0
-    @tadpole.pos.y    = json["y"]||0
-    @tadpole.angle    = json["angle"]||0
-    @tadpole.momentum = json["momentum"]||0
+    @tadpole.pos.x    = json["x"].to_f rescue 0
+    @tadpole.pos.y    = json["y"].to_f rescue 0
+    @tadpole.angle    = json["angle"].to_f rescue 0
+    @tadpole.momentum = json["momentum"].to_f rescue 0
     @tadpole.handle   = (json["name"] || "Guest #{@tadpole.id}").to_s[0...70]
     
     broadcast @tadpole.to_json
@@ -79,10 +78,8 @@ class TadpoleConnection
   def message_handler(json)
     msg = json["message"].to_s[0...70]
     
-    EventMachine.defer {
-      Message.create(:body => "#{msg}", :author => @tadpole.handle);
-    }    
-	  
+    @storage.message(msg,@tadpole)
+        	  
 	  broadcast( %({"type":"message","id":#{@tadpole.id},"message":#{ msg.to_json }}) )
   end
   	

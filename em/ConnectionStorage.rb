@@ -7,6 +7,7 @@ class ConnectionStorage
   def initialize(db)
     @db = db
 		@connections = db.collection('connections')
+		@messages = db.collection('messages')
 		@doc = {}		
   end
   
@@ -24,6 +25,15 @@ class ConnectionStorage
 	    @connections.update({ "_id" => @doc["_id"] }, @doc)
     end
   end
-  
+    
+  def message(body,tadpole)
+    @messages.insert( {
+      :created_on => Time.now,
+      :connection_id => @doc["_id"].to_s,
+      :body => body,      
+      :author => tadpole.handle,
+      :location => [tadpole.pos.x,tadpole.pos.y]
+    })
+  end
   
 end

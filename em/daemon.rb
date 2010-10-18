@@ -29,14 +29,12 @@ if is_port_open?(HOST, PORT)
   Syslog.open("rumpetrolld") do
     Syslog.err msg
   end  
-  exit 1  
+  exit 1
 end
 
-#mongodb = Mongo::Connection.new.db("rumpetroll")
-#connections = mongodb["connections"]
-#connections.find({  }).each do |doc|
-#  puts doc.inspect
-#end
+mongodb = Mongo::Connection.new.db("rumpetroll")
+messages = mongodb["messages"]
+messages.create_index([["location", Mongo::GEO2D]])
 
 begin
       
