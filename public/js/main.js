@@ -22,7 +22,10 @@ var initApp = function() {
 	document.addEventListener('touchstart',   app.touchstart, false);
 	document.addEventListener('touchend',     app.touchend, false);
 	document.addEventListener('touchcancel',  app.touchend, false);
-	document.addEventListener('touchmove',    app.touchmove, false);
+	document.addEventListener('touchmove',    app.touchmove, false);	
+
+	document.addEventListener('keydown',    app.keydown, false);
+	document.addEventListener('keyup',    app.keyup, false);
 
 	setInterval(runLoop,30);
 }
@@ -60,11 +63,11 @@ var addStats = function() {
 	isStatsOn = true;
 }
 
-document.addEventListener('keydown',function(e) {
-	if(e.which == 27) {
-		addStats();
-	}
-})
+//document.addEventListener('keydown',function(e) {
+//	if(e.which == 27) {
+//		addStats();
+//	}
+//})
 
 if(debug) { addStats(); }
 
