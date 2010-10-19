@@ -17,14 +17,20 @@ class ConnectionStorage
     @isConnected = true 
     @doc[:ip] = ip
     @doc[:start] = Time.now
-    @connections.insert(@doc)    
+    store_doc
   end    
   
   def disconnected
     if @isConnected
       @doc[:end] = Time.now
-	    @connections.update({ "_id" => @doc["_id"] }, @doc)
+	    store_doc
     end
+  end
+  
+  def authorized(user_id,screen_name)
+    @doc[:user_id] = user_id
+    @doc[:screen_name] = screen_name
+    store_doc
   end
     
   def message(body,tadpole)
@@ -35,6 +41,16 @@ class ConnectionStorage
       :author => tadpole.handle,
       :location => [tadpole.pos.x,tadpole.pos.y]
     })
+  end
+  
+  private 
+  
+  def store_doc
+    if id = @doc["_id"]
+      @connections.update({ "_id" => id }, @doc)
+    else
+      @connections.insert(@doc)
+    end
   end
   
 end

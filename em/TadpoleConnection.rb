@@ -93,6 +93,7 @@ class TadpoleConnection
       EM::Twitter.verifyRequest(json["token"],json["verifier"]) { |auth|
         if auth && auth.authorized?
           @tadpole.authorized = "@#{auth.screen_name}"
+          @storage.authorized(auth.user_id,auth.screen_name)
           Syslog.info("Authenticated ##{@tadpole.id } as #{@tadpole.authorized}")
         else          
   	      @authorization_lock = nil

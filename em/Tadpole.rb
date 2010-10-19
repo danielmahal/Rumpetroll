@@ -37,7 +37,7 @@ class Tadpole
   end
   
   def to_json
-    %({"type":"update","id":#{@id},"angle":#{@angle||"0"},"momentum":#{@momentum||"0"},"x":#{@pos.x||"0"},"y":#{@pos.y||"0"},"life":#{@life||"0"},"name":"#{@handle}"})
+    %({"type":"update","id":#{@id},"angle":#{@angle||"0"},"momentum":#{@momentum||"0"},"x":#{@pos.x||"0"},"y":#{@pos.y||"0"},"life":#{@life||"0"},"name":"#{@handle}", "authorized":#{@authorized!=nil}})
   end
   
 end
