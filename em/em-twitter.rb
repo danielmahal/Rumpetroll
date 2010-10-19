@@ -16,13 +16,12 @@ module EM
         proc { 
           auth = TwitterAuthorization.new(@app) 
           auth.generate_authorize_url
-          @collection["secrets"].insert({"token" => auth.tokens.request_token, "secret" => auth.tokens.request_secret })
+          @collection["secrets"].insert({"token" => auth.tokens.request_token, "secret" => auth.tokens.request_secret, "created_at" => Time.now.to_f })
           auth
         },block      
       )
     end
-    
-    
+        
     def self.verifyRequest(token,verifier,&block)
       EventMachine.defer(
         proc {

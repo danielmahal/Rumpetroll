@@ -82,21 +82,29 @@ class TadpoleConnection
     msg = json["message"].to_s[0...70]
     
     @storage.message(msg,@tadpole)
-        	  
+    
 	  broadcast( %({"type":"message","id":#{@tadpole.id},"message":#{ msg.to_json }}) )
   end
   
   def authorize_handler(json)
+    return if @authorization_lock 
+    @authorization_lock = true;
     if json["token"]
       EM::Twitter.verifyRequest(json["token"],json["verifier"]) { |auth|
         if auth && auth.authorized?
           @tadpole.authorized = "@#{auth.screen_name}"
           Syslog.info("Authenticated ##{@tadpole.id } as #{@tadpole.authorized}")
+        else          
+  	      @authorization_lock = nil
   	    end
       }
-    else           
-      EM::Twitter.getRequest { |auth| @socket.send(%({"type":"redirect","url":#{ auth.authorize_url.to_json }})) }
+    else
+      EM::Twitter.getRequest { |auth| 
+        @socket.send(%({"type":"redirect","url":#{ auth.authorize_url.to_json }})) 
+        @authorization_lock = nil
+      }      
     end
+    
   end
   	
 end
