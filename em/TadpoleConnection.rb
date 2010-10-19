@@ -11,19 +11,12 @@ class TadpoleConnection
 		@tadpole = Tadpole.new()
 		@last_update = 0;
 		@quota = 10;
-								
-		socket.onopen {
-		  		  		  
-		  origin = socket.request["Origin"]
-      port, ip = Socket.unpack_sockaddr_in(socket.get_peername)
-            
-      @storage.connected(ip)
-      
-      Syslog.info "Connection ##{@tadpole.id } from: #{ip}:#{port} at #{origin}"
-  		@socket.send(%({"type":"welcome","id":#{@tadpole.id}}))
-  		subscribe(channel)
-		}		
-		
+									  		  		  
+    port, ip = Socket.unpack_sockaddr_in(socket.get_peername)            
+    Syslog.info "Connection ##{@tadpole.id} from: #{ip}:#{port}"
+  	@storage.connected(ip)    
+  	@socket.send(%({"type":"welcome","id":#{@tadpole.id}}))
+  	subscribe(channel)
 	end
 	
 	def subscribe(channel)

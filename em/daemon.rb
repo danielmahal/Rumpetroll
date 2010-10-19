@@ -52,13 +52,15 @@ begin
   	
   	EventMachine::WebSocket.start(:host => HOST, :port => PORT, :debug => VERBOSE_MODE) do |socket|  	  
   	  port, ip = Socket.unpack_sockaddr_in(socket.get_peername)
-      origin = socket.request["Origin"]
-  	  if WHITELIST.include?(origin) || DEV_MODE
-  	    TadpoleConnection.new(socket, channel, ConnectionStorage.new(db))
-  	  else
-  	    Syslog.warning("Connection from: #{ip}:#{port} at #{origin} did not match whitelist" )
-	      socket.close_connection
-  	  end  	    		  		
+  	  socket.onopen {
+  	    origin = socket.request["Origin"]
+    	  if WHITELIST.include?(origin) || DEV_MODE
+    	    TadpoleConnection.new(socket, channel, ConnectionStorage.new(db))
+    	  else
+    	    Syslog.warning("Connection from: #{ip}:#{port} at #{origin} did not match whitelist" )
+  	      socket.close_connection
+    	  end         
+  	  }  	  
   	end
     
   	Syslog.notice "Server started at #{HOST}:#{PORT}."
