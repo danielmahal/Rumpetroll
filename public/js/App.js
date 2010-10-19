@@ -8,7 +8,7 @@ var App = function(aSettings, aCanvas) {
 			context,
 			webSocket,
 			webSocketService,
-			mouse = {x: 0, y: 0, worldx: 0, worldy: 0},
+			mouse = {x: 0, y: 0, worldx: 0, worldy: 0, tadpole:null},
 			keyNav = {x:0,y:0},
 			messageQuota = 5
 	;
@@ -36,7 +36,7 @@ var App = function(aSettings, aCanvas) {
 		
 		// Update tadpoles
 		for(id in model.tadpoles) {
-			model.tadpoles[id].update();
+			model.tadpoles[id].update(mouse);
 		}
 		
 		// Update waterParticles
@@ -105,10 +105,17 @@ var App = function(aSettings, aCanvas) {
 	
 	app.mousedown = function(e) {
 		mouse.clicking = true;
-		
+
+		if(mouse.tadpole) {
+			mouse.tadpole.onclick(e);
+			return;
+		}
+
 		if(model.userTadpole && e.which == 1) {
 			model.userTadpole.momentum = model.userTadpole.targetMomentum = model.userTadpole.maxMomentum;
 		}
+
+
 	};
 	
 	app.mouseup = function(e) {
