@@ -28,11 +28,7 @@ module EM
         proc {
           if doc = @collection["secrets"].find_one({ "token" => token })
             @collection["secrets"].remove(doc)
-            tokens = OAuthTokens.new()
-            tokens.request_verifier = verifier
-            tokens.request_token    = doc["token"]
-            tokens.request_secret   = doc["secret"]
-            auth = TwitterAuthorization.new(@app,tokens)
+            auth = TwitterAuthorization.new(@app,OAuthTokens.new(doc["token"],doc["secret"],verifier))
             #TODO: should actually return authorized TwitterAuthorization not this request:
             auth.request(:get,"/1/account/verify_credentials.json")
           end
@@ -40,9 +36,8 @@ module EM
       )
     end
 
-    #TODO: Twitter.getAccess(token,secret)end
-    
-    
+    #TODO: Twitter.getAccess(token,secret)end    
+    #TODO: Twitter.request(:post,"command",&block)
     
   end  
 end

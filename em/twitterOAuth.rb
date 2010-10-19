@@ -1,15 +1,7 @@
 require 'rubygems'
 require 'oauth'
 
-class OAuthTokens
-  
-  attr_accessor :request_token,
-                :request_secret,
-                :request_verifier,
-                :access_token,
-                :access_secret
-  
-end
+OAuthTokens = Struct.new(:request_token, :request_secret, :request_verifier, :access_token, :access_secret)
 
 class TwitterApp
   
