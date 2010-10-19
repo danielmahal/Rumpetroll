@@ -24,7 +24,7 @@ var initApp = function() {
 	document.addEventListener('touchcancel',  app.touchend, false);
 	document.addEventListener('touchmove',    app.touchmove, false);
 	
-	document.getElementById('authorize-user-button').addEventListener('click', function(e) { app.authorize(null,null) });
+	document.getElementById('authorize-user-button').addEventListener('click', function(e) { app.authorize(null,null);return false });
 
 	setInterval(runLoop,30);
 }

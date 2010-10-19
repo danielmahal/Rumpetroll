@@ -28,7 +28,7 @@ Libraries used:
 
 EventMachine	http://rubyeventmachine.com/	
 em-websockets	http://github.com/igrigorik/em-websocket
-oauth-ruby		http://oauth.rubyforge.org/, http://github.com/oauth/oauth-ruby
-MongoDB			http://mongodb.org, http://github.com/mongodb/mongo-ruby-driver
-em-mongo		http://github.com/bcg/em-mongo
-oauth-ruby		http://oauth.rubyforge.org/, http://github.com/oauth/oauth-ruby
+oauth-ruby	http://oauth.rubyforge.org/, http://github.com/oauth/oauth-ruby
+MongoDB		http://mongodb.org, http://github.com/mongodb/mongo-ruby-driver
+em-mongo	http://github.com/bcg/em-mongo
+oauth-ruby	http://oauth.rubyforge.org/, http://github.com/oauth/oauth-ruby
