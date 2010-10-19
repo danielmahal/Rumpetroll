@@ -88,11 +88,10 @@ class TadpoleConnection
   
   def authorize_handler(json)
     if json["token"]
-      EM::Twitter.verifyRequest(json["token"],json["verifier"]) { |response|
-        if response
-          json = JSON.parse(response.body) rescue {};
-          @tadpole.authorized = "@#{json["screen_name"]}"
-    	    Syslog.info("Authenticated ##{@tadpole.id } as #{@tadpole.authorized}")
+      EM::Twitter.verifyRequest(json["token"],json["verifier"]) { |auth|
+        if auth && auth.authorized?
+          @tadpole.authorized = "@#{auth.screen_name}"
+          Syslog.info("Authenticated ##{@tadpole.id } as #{@tadpole.authorized}")
   	    end
       }
     else           

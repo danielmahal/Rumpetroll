@@ -21,7 +21,7 @@ end
 
 class TwitterAuthorization
   
-  attr_reader :tokens,:authorize_url
+  attr_reader :tokens,:authorize_url,:screen_name,:user_id
 
   def initialize(app,tokens=nil)
     
@@ -40,31 +40,43 @@ class TwitterAuthorization
     @authorize_url = request_token.authorize_url
   end
     
-  def authorize(request_token,request_verifier)
-    @tokens.request_token = request_token
-    @tokens.request_verifier = request_verifier
-    access_token
+  def authorize(request_token=nil,request_verifier=nil)
+    @tokens.request_token     = request_token || @tokens.request_token
+    @tokens.request_verifier  = request_verifier || @tokens.request_verifier
+    access_token != nil
   end
-  
+      
   def request(*args)
     at = access_token
     at.request(*args) if at
+  end
+  
+  def authorized?
+    @access_token != nil
   end
     
   private
     
     def access_token
-      unless @access_token
+      @access_token ||= begin
         if @tokens.access_token && @tokens.access_secret
-          @access_token = OAuth::AccessToken.new(@consumer, @tokens.access_token, @tokens.access_secret)
+          #TODO: Doesn't actually confirm with server and get screen name.
+          at = OAuth::AccessToken.new(@consumer, @tokens.access_token, @tokens.access_secret)
         elsif @tokens.request_token && @tokens.request_secret && @tokens.request_verifier
           request_token = OAuth::RequestToken.new(@consumer, @tokens.request_token, @tokens.request_secret )
-          @access_token = request_token.get_access_token(:oauth_verifier => @tokens.request_verifier)
-          @tokens.access_token = @access_token.token
-          @tokens.access_secret = @access_token.secret
+          at = request_token.get_access_token(:oauth_verifier => @tokens.request_verifier) rescue nil          
         end
+        
+        if at
+          @tokens.access_token = at.token
+          @tokens.access_secret = at.secret
+          @screen_name = at.params[:screen_name]
+          @user_id = at.params[:user_id]          
+        end
+        
+        at
       end
-      @access_token
+                        
     end
   
 end
