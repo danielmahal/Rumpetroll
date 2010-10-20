@@ -56,6 +56,11 @@ a {
 p {
 	color: #999999;
 	font-size: 1.3em;
+	margin-bottom:0.5em;
+}
+
+strong {
+	font-weight:bold;
 }
 
 /*#ui {

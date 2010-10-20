@@ -27,6 +27,10 @@ var initApp = function() {
 	document.addEventListener('keydown',    app.keydown, false);
 	document.addEventListener('keyup',    app.keyup, false);
 
+	document.addEventListener('touchmove',    app.touchmove, false);
+	
+	document.getElementById('authorize-user-button').addEventListener('click', function(e) { app.authorize(null,null);return false });
+
 	setInterval(runLoop,30);
 }
 
@@ -42,7 +46,6 @@ if(Modernizr.canvas && Modernizr.websockets) {
 	document.getElementById('unsupported-browser').style.display = "block";	
 	document.getElementById('force-init-button').addEventListener('click', forceInit);
 }
-
 
 var addStats = function() {
 	if (isStatsOn) { return; }

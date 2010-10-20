@@ -1,23 +1,22 @@
-require 'storage'
 require 'json'
 require 'Tadpole.rb'
+require 'mongo'
 
 class TadpoleConnection
 
-	def initialize(socket, channel)
+	def initialize(socket, channel, storage)
 		@socket = socket
+		@storage = storage
+
 		@tadpole = Tadpole.new()
 		@last_update = 0;
 		@quota = 10;
-								
-		socket.onopen {		  		  
-		  origin = socket.request["Origin"]
-      port, ip = Socket.unpack_sockaddr_in(socket.get_peername)
-      Syslog.info "Connection ##{@tadpole.id } from: #{ip}:#{port} at #{origin}"
-  		@socket.send(%({"type":"welcome","id":#{@tadpole.id}}))
-  		subscribe(channel)
-		}		
-		
+									  		  		  
+    port, ip = Socket.unpack_sockaddr_in(socket.get_peername)            
+    Syslog.info "Connection ##{@tadpole.id} from: #{ip}:#{port}"
+  	@storage.connected(ip)    
+  	@socket.send(%({"type":"welcome","id":#{@tadpole.id}}))
+  	subscribe(channel)
 	end
 	
 	def subscribe(channel)
@@ -28,7 +27,8 @@ class TadpoleConnection
 	end
 		
 	def unsubscribe()
-	  broadcast %({"type":"closed","id":#{@tadpole.id}})    
+	  @storage.disconnected()
+	  broadcast %({"type":"closed","id":#{@tadpole.id}})
 	  Syslog.info "Disconnect ##{@tadpole.id }"
 		@channel.unsubscribe(@id)
 	end
@@ -53,15 +53,20 @@ class TadpoleConnection
     when "message"  
       detect_spam()
       message_handler(json)
-    end      
+    when "authorize"
+      authorize_handler(json)
+    end    
   end
 
   def update_handler(json)
-    @tadpole.pos.x    = json["x"]||0
-    @tadpole.pos.y    = json["y"]||0
-    @tadpole.angle    = json["angle"]||0
-    @tadpole.momentum = json["momentum"]||0
-    @tadpole.handle   = (json["name"] || "Guest #{@tadpole.id}").to_s[0...70]
+    @tadpole.pos.x    = json["x"].to_f rescue 0
+    @tadpole.pos.y    = json["y"].to_f rescue 0
+    @tadpole.angle    = json["angle"].to_f rescue 0
+    @tadpole.momentum = json["momentum"].to_f rescue 0    
+    
+    name = json["name"]
+    name = nil if name && name.include?("@")    
+    @tadpole.handle   = (@tadpole.authorized || name || "Guest #{@tadpole.id}").to_s[0...70]
     
     broadcast @tadpole.to_json
   end
@@ -69,11 +74,31 @@ class TadpoleConnection
   def message_handler(json)
     msg = json["message"].to_s[0...70]
     
-    EventMachine.defer {
-      Message.create(:body => "#{msg}", :author => @tadpole.handle);
-    }    
-	  
+    @storage.message(msg,@tadpole)
+    
 	  broadcast( %({"type":"message","id":#{@tadpole.id},"message":#{ msg.to_json }}) )
+  end
+  
+  def authorize_handler(json)
+    return if @authorization_lock 
+    @authorization_lock = true;
+    if json["token"]
+      EM::Twitter.verifyRequest(json["token"],json["verifier"]) { |auth|
+        if auth && auth.authorized?
+          @tadpole.authorized = "@#{auth.screen_name}"
+          @storage.authorized(auth.user_id,auth.screen_name)
+          Syslog.info("Authenticated ##{@tadpole.id } as #{@tadpole.authorized}")
+        else          
+  	      @authorization_lock = nil
+  	    end
+      }
+    else
+      EM::Twitter.getRequest { |auth| 
+        @socket.send(%({"type":"redirect","url":#{ auth.authorize_url.to_json }})) 
+        @authorization_lock = nil
+      }      
+    end
+    
   end
   	
 end

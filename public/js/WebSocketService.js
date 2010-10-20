@@ -27,10 +27,8 @@ var WebSocketService = function(model, webSocket) {
 		
 		var tadpole = model.tadpoles[data.id];
 		
-		if(tadpole.id == model.userTadpole.id) {
-			if(!model.userTadpole.name) {
-				tadpole.name = data.name;
-			}
+		if(tadpole.id == model.userTadpole.id) {			
+			tadpole.name = data.name;
 			return;
 		} else {
 			tadpole.name = data.name;
@@ -63,6 +61,12 @@ var WebSocketService = function(model, webSocket) {
 		if(model.tadpoles[data.id]) {
 			delete model.tadpoles[data.id];
 			delete model.arrows[data.id];
+		}
+	}
+	
+	this.redirectHandler = function(data) {
+		if (data.url) {
+			document.location = data.url
 		}
 	}
 	
@@ -106,6 +110,15 @@ var WebSocketService = function(model, webSocket) {
 			message: msg
 		};
 		
+		webSocket.send(JSON.stringify(sendObj));
+	}
+	
+	this.authorize = function(token,verifier) {
+		var sendObj = {
+			type: 'authorize',
+			token: token,
+			verifier: verifier
+		};
 		webSocket.send(JSON.stringify(sendObj));
 	}
 }
