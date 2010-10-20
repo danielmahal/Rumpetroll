@@ -38,29 +38,31 @@
 				closechat();
 			}
 			
-			if(messageHistory.length > 0 && !hidden) {
+			if(!hidden) {
 	
 				e.stopPropagation();
+				if(messageHistory.length > 0) {
 
-				if(e.keyCode == keys.up)
-				{
-					if(messagePointer > 0)
+					if(e.keyCode == keys.up)
 					{
-						messagePointer--;
-						input.val(messageHistory[messagePointer]);
+						if(messagePointer > 0)
+						{
+							messagePointer--;
+							input.val(messageHistory[messagePointer]);
+						}
 					}
-				}
-				else if(e.keyCode == keys.down)
-				{
-					if(messagePointer < messageHistory.length-1)
+					else if(e.keyCode == keys.down)
 					{
-						messagePointer++;
-						input.val(messageHistory[messagePointer]);
-					}
-					else 
-					{
-						closechat();
-						return;
+						if(messagePointer < messageHistory.length-1)
+						{
+							messagePointer++;
+							input.val(messageHistory[messagePointer]);
+						}
+						else 
+						{
+							closechat();
+							return;
+						}
 					}
 				}
 			}
