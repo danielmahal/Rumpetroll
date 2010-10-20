@@ -108,10 +108,8 @@ var App = function(aSettings, aCanvas) {
 
 		if(mouse.tadpole) {
 			mouse.tadpole.onclick(e);
-			return;
 		}
-
-		if(model.userTadpole && e.which == 1) {
+		else if(model.userTadpole && e.which == 1) {
 			model.userTadpole.momentum = model.userTadpole.targetMomentum = model.userTadpole.maxMomentum;
 		}
 
