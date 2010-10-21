@@ -8,6 +8,8 @@ var Tadpole = function() {
 	this.name = '';
 	this.age = 0;
 	
+	this.hover = true;
+
 	this.momentum = 0;
 	this.maxMomentum = 3;
 	this.angle = Math.PI * 2;
@@ -22,7 +24,7 @@ var Tadpole = function() {
 	this.changed = 0;
 	this.timeSinceLastServerUpdate = 0;
 	
-	this.update = function(tadpoles) {
+	this.update = function(mouse) {
 		tadpole.timeSinceLastServerUpdate++;
 		
 		tadpole.x += Math.cos(tadpole.angle) * tadpole.momentum;
@@ -42,11 +44,33 @@ var Tadpole = function() {
 				tadpole.messages.splice(i,1);
 			}
 		}
-		
+
+		// Update tadpole hover/mouse state
+		if(Math.sqrt(Math.pow(tadpole.x - mouse.worldx,2) + Math.pow(tadpole.y - mouse.worldy,2)) < tadpole.size+2) {
+			tadpole.hover = true;
+			mouse.tadpole = tadpole;
+		}
+		else {
+			if(mouse.tadpole && mouse.tadpole.id == tadpole.id) {
+				mouse.tadpole = null;
+			}
+			tadpole.hover = false;
+		}
+
 		tadpole.tail.update();
 	};
 	
-	
+	this.onclick = function(e) {
+		if(e.which == 1) {
+			if(tadpole.name.charAt('0') == "@") {
+				window.open("http://twitter.com/" + tadpole.name.substring(1));
+			}
+		}
+		else if(e.which == 2) {
+			// open menu
+			e.preventDefault();
+		}
+	};
 	
 	this.userUpdate = function(tadpoles, angleTargetX, angleTargetY) {
 		this.age++;
@@ -85,7 +109,13 @@ var Tadpole = function() {
 	
 	this.draw = function(context) {
 		var opacity = Math.max(Math.min(20 / Math.max(tadpole.timeSinceLastServerUpdate-300,1),1),.2).toFixed(3);
-		context.fillStyle = 'rgba(226,219,226,'+opacity+')';
+		if(tadpole.hover) {
+			context.fillStyle = 'rgba(249, 136, 119,'+opacity+')';
+			context.shadowColor   = 'rgba(249, 136, 119, '+opacity*0.7+')';
+		}
+		else {
+			context.fillStyle = 'rgba(226,219,226,'+opacity+')';
+		}
 		
 		context.shadowOffsetX = 0;
 		context.shadowOffsetY = 0;
@@ -109,6 +139,8 @@ var Tadpole = function() {
 	};
 	
 	var drawName = function(context) {
+		var opacity = Math.max(Math.min(20 / Math.max(tadpole.timeSinceLastServerUpdate-300,1),1),.2).toFixed(3);
+		context.fillStyle = 'rgba(226,219,226,'+opacity+')';
 		context.font = 7 + "px 'proxima-nova-1','proxima-nova-2', arial, sans-serif";
 		context.textBaseline = 'hanging';
 		var width = context.measureText(tadpole.name).width;

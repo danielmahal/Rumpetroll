@@ -74,16 +74,19 @@ strong {
 	z-index:2;
 }
 
-#chat {
-	position: absolute;
-	height: 1px;
-	top: -100px;
-	left: 0;
+#chatText
+{
+	display:inline-block;	
 }
-
-#chatview {
+#chatText,#chat
+{
+	font-size:3em;
+	font-weight: bold;
+	max-width: 70%;
+}
+#chat {
 	/*font-family: "Arial Rounded MT Bold";*/
-	display: none;
+	display: block;
 	position: absolute;
 	top: 60%;
 	left: 50%;
@@ -91,11 +94,14 @@ strong {
 	background: rgba(255,255,255,.1);
 	-webkit-border-radius: 20px;
 	color: #fff;
-	max-width: 70%;
 	text-align: center;
-	font-size: 3em;
-	font-weight: bold;
+	border-style:none;
+	outline-style:none;
+	height:30px;
+	opacity:0;
+	-webkit-transition: opacity .2s linear;
 }
+
 
 #cant-connect {
 	/*font-family: "Arial Rounded MT Bold";*/
