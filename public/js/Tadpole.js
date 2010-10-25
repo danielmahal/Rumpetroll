@@ -64,12 +64,15 @@ var Tadpole = function() {
 		if(e.ctrlKey && e.which == 1) {
 			if(isAuthorized() && tadpole.hover) {
 				window.open("http://twitter.com/" + tadpole.name.substring(1));
+                return true;
 			}
 		}
 		else if(e.which == 2) {
-			// open menu
+			//todo:open menu
 			e.preventDefault();
+            return true;
 		}
+        return false;
 	};
 	
 	this.userUpdate = function(tadpoles, angleTargetX, angleTargetY) {
@@ -140,7 +143,7 @@ var Tadpole = function() {
 	};
 	
 	var isAuthorized = function() {
-		return tadpole.name.charAt('0') == "p";
+		return tadpole.name.charAt('0') == "@";
 	};
 	
 	var drawName = function(context) {
