@@ -226,3 +226,19 @@ a#force-init-button:hover {
 	top: 30px;
 	right: 40px;
 }
+
+#authentication
+{
+    width:70%;
+    height:70%;
+    position:absolute;
+    left:20px;
+}
+
+#contextMenu {
+    width: 100px;
+    height: auto;
+    position: absolute;
+    border-radius:
+}
+

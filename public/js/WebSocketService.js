@@ -27,6 +27,8 @@ var WebSocketService = function(model, webSocket) {
 		
 		var tadpole = model.tadpoles[data.id];
 		
+        tadpole.authorized = data.authorized;
+
 		if(tadpole.id == model.userTadpole.id) {			
 			tadpole.name = data.name;
 			return;
