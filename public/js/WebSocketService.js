@@ -119,6 +119,7 @@ var WebSocketService = function(model, webSocket) {
 			token: token,
 			verifier: verifier
 		};
+		
 		webSocket.send(JSON.stringify(sendObj));
 	}
 }
