@@ -62,7 +62,7 @@ var Tadpole = function() {
 	
 	this.onclick = function(e) {
 		if(e.which == 1) {
-			if(tadpole.name.charAt('0') == "@") {
+			if(isAuthorized()) {
 				window.open("http://twitter.com/" + tadpole.name.substring(1));
 			}
 		}
@@ -109,9 +109,9 @@ var Tadpole = function() {
 	
 	this.draw = function(context) {
 		var opacity = Math.max(Math.min(20 / Math.max(tadpole.timeSinceLastServerUpdate-300,1),1),.2).toFixed(3);
-		if(tadpole.hover) {
-			context.fillStyle = 'rgba(249, 136, 119,'+opacity+')';
-			context.shadowColor   = 'rgba(249, 136, 119, '+opacity*0.7+')';
+		if(tadpole.hover && isAuthorized()) {
+			context.fillStyle = 'rgba(192, 253, 247,'+opacity+')';
+			// context.shadowColor   = 'rgba(249, 136, 119, '+opacity*0.7+')';
 		}
 		else {
 			context.fillStyle = 'rgba(226,219,226,'+opacity+')';
@@ -137,6 +137,10 @@ var Tadpole = function() {
 		drawName(context);
 		drawMessages(context);
 	};
+	
+	var isAuthorized = function() {
+		return tadpole.name.charAt('0') == "@";
+	}
 	
 	var drawName = function(context) {
 		var opacity = Math.max(Math.min(20 / Math.max(tadpole.timeSinceLastServerUpdate-300,1),1),.2).toFixed(3);
