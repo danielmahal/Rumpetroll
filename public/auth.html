@@ -3,9 +3,29 @@
 <html>
 	<head>
 		<meta charset="utf-8">
+<<<<<<< HEAD
 		<title>Rumpetroll! — It's norwegian, but probably not what you think</title>
 	</head>
 	<body>
+=======
+		<title>Hold on...</title>
+		<link rel="stylesheet" type="text/css" href="css/main.css" />
+	</head>
+	<body>
+	
+		<script src="js/lib/parseUri.js"></script>                
+		<script>
+			
+			
+			uri = parseUri(document.location)
+			if ( uri.queryKey.oauth_token ) {
+					window.opener.app.authorize(uri.queryKey.oauth_token, uri.queryKey.oauth_verifier);
+					window.close()
+			}
+			
+		
+		</script>
+>>>>>>> 33d104191777aff6bc0f9e32a4bddcba0df65030
 	</body>
 </html>
 

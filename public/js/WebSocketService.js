@@ -68,7 +68,11 @@ var WebSocketService = function(model, webSocket) {
 	
 	this.redirectHandler = function(data) {
 		if (data.url) {
-			document.location = data.url
+			if (authWindow) {
+				authWindow.document.location = data.url;
+			} else {
+				document.location = data.url;
+			}			
 		}
 	}
 	
