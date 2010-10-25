@@ -117,7 +117,7 @@ var App = function(aSettings, aCanvas) {
 	app.mousedown = function(e) {
 		mouse.clicking = true;
 
-		if(mouse.tadpole) {
+		if(mouse.tadpole && mouse.tadpole.hover) {
 			mouse.tadpole.onclick(e);
 		}
 		else if(model.userTadpole && e.which == 1) {

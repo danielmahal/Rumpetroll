@@ -1,3 +1,3 @@
 var Settings = function() {
-  this.socketServer = 'ws://rumpetroll.six12.co:8180';
+  this.socketServer = 'ws://localhost:8181';
 }

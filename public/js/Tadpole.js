@@ -8,7 +8,7 @@ var Tadpole = function() {
 	this.name = '';
 	this.age = 0;
 	
-	this.hover = true;
+	this.hover = false;
 
 	this.momentum = 0;
 	this.maxMomentum = 3;
@@ -52,7 +52,7 @@ var Tadpole = function() {
 		}
 		else {
 			if(mouse.tadpole && mouse.tadpole.id == tadpole.id) {
-				mouse.tadpole = null;
+				//mouse.tadpole = null;
 			}
 			tadpole.hover = false;
 		}
@@ -61,8 +61,8 @@ var Tadpole = function() {
 	};
 	
 	this.onclick = function(e) {
-		if(e.which == 1) {
-			if(isAuthorized()) {
+		if(e.ctrlKey && e.which == 1) {
+			if(isAuthorized() && tadpole.hover) {
 				window.open("http://twitter.com/" + tadpole.name.substring(1));
 			}
 		}
@@ -109,9 +109,7 @@ var Tadpole = function() {
 	
 	this.draw = function(context) {
 		var opacity = Math.max(Math.min(20 / Math.max(tadpole.timeSinceLastServerUpdate-300,1),1),.2).toFixed(3);
-		if(tadpole.hover) {
-			context.fillStyle = 'rgba(72, 253, 238,'+opacity+')';
-			context.shadowColor   = 'rgba(249, 136, 119, '+opacity*0.7+')';
+
 		if(tadpole.hover && isAuthorized()) {
 			context.fillStyle = 'rgba(192, 253, 247,'+opacity+')';
 			// context.shadowColor   = 'rgba(249, 136, 119, '+opacity*0.7+')';
@@ -142,8 +140,8 @@ var Tadpole = function() {
 	};
 	
 	var isAuthorized = function() {
-		return tadpole.name.charAt('0') == "@";
-	}
+		return tadpole.name.charAt('0') == "p";
+	};
 	
 	var drawName = function(context) {
 		var opacity = Math.max(Math.min(20 / Math.max(tadpole.timeSinceLastServerUpdate-300,1),1),.2).toFixed(3);
