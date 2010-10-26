@@ -4,7 +4,7 @@ require 'iconv'
 
 IC = Iconv.new('UTF-8//IGNORE', 'UTF-8')
 def clean_untrusted_string(str)  
-  IC.iconv(str + ' ')[0..-2]  
+  IC.iconv(str.to_s + ' ')[0..-2]  
 end
 
 
