@@ -3,6 +3,7 @@ var settings = new Settings();
 var debug = false;
 var isStatsOn = false;
 
+var authWindow;
 
 var app;
 var runLoop = function() {
@@ -27,7 +28,11 @@ var initApp = function() {
 	document.addEventListener('keydown',    app.keydown, false);
 	document.addEventListener('keyup',    app.keyup, false);
 	
-	document.getElementById('authorize-user-button').addEventListener('click', function(e) { app.authorize(null,null);return false });
+	document.getElementById('authorize-user-button').addEventListener('click', function(e) { 
+		app.authorize(null,null);
+		authWindow = window.open("auth.html","","width=950,height=460,menubar=no,toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes')")
+		return false;
+	});
 
 	setInterval(runLoop,30);
 }

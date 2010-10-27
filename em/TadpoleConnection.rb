@@ -88,6 +88,9 @@ class TadpoleConnection
           @tadpole.authorized = "@#{auth.screen_name}"
           @storage.authorized(auth.user_id,auth.screen_name)
           Syslog.info("Authenticated ##{@tadpole.id } as #{@tadpole.authorized}")
+          
+          @tadpole.handle = @tadpole.authorized
+          broadcast @tadpole.to_json          
         else          
   	      @authorization_lock = nil
   	    end
@@ -100,5 +103,7 @@ class TadpoleConnection
     end
     
   end
+  
+  
   	
 end
