@@ -11,7 +11,8 @@ class Tadpole
                 :momentum,
                 :angle,
                 :handle,
-                :authorized
+                :authorized,
+                :twitter_id
   
   def initialize()
     @id = @@count += 1
@@ -23,6 +24,7 @@ class Tadpole
     @angle = 0;
     @momentum = 0;
     @authorized = nil;
+    @twitter_id = 0;
   end
   
   ##def update()   
@@ -37,7 +39,7 @@ class Tadpole
   end
   
   def to_json
-    %({"type":"update","id":#{@id},"angle":#{@angle||"0"},"momentum":#{@momentum||"0"},"x":#{@pos.x||"0"},"y":#{@pos.y||"0"},"life":#{@life||"0"},"name":"#{@handle}", "authorized":#{@authorized!=nil}})
+    %({"type":"update","id":#{@id},"angle":#{@angle||"0"},"momentum":#{@momentum||"0"},"x":#{@pos.x||"0"},"y":#{@pos.y||"0"},"life":#{@life||"0"},"name":"#{@handle}", "authorized":#{@authorized!=nil}, "twitter_id": #{@twitter_id} })
   end
   
 end

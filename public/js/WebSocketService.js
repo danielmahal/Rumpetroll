@@ -27,9 +27,16 @@ var WebSocketService = function(model, webSocket) {
 		
 		var tadpole = model.tadpoles[data.id];
 		
-        tadpole.authorized = data.authorized;
+        tadpole.twitter_id = data.twitter_id;
 
-		if(tadpole.id == model.userTadpole.id) {			
+		if(tadpole.id == model.userTadpole.id) {
+            if(tadpole.authorized != data.authorized) {
+                //ladies and gentlemen we have just been authorized
+                //....
+                //..so we have to get our friends   
+                webSocketService.sendTwitterRequest("friends");
+            }
+            tadpole.authorized = data.authorized;
 			tadpole.name = data.name;
 			return;
 		} else {
@@ -46,7 +53,7 @@ var WebSocketService = function(model, webSocket) {
 		
 		tadpole.angle = data.angle;
 		tadpole.momentum = data.momentum;
-		
+        tadpole.authorized = data.authorized;
 		tadpole.timeSinceLastServerUpdate = 0;
 	}
 	
@@ -118,6 +125,25 @@ var WebSocketService = function(model, webSocket) {
 		
 		webSocket.send(JSON.stringify(sendObj));
 	}
+    this.twitterHandler = function(data) {
+        if(data.request == "friends") {
+            model.userTadpole.friends = data.result;
+        }
+        else if(data.result == "success") {
+            webSocketService.sendTwitterRequest("friends");
+        }
+    }
+    this.sendTwitterRequest = function(request,options) {
+        var sendObj = {
+			type: 'twitter',
+            request: request
+		};
+        for(var i in options) {
+            sendObj[i] = options[i];
+        }
+				
+		webSocket.send(JSON.stringify(sendObj));                
+    }
 	
 	this.authorize = function(token,verifier) {
 		var sendObj = {

@@ -38,7 +38,7 @@
 				closechat();
 			}
 			
-			if(!hidden) {
+			if(!hidden || e.ctrlKey) {
 		
 				e.stopPropagation();
 				if(messageHistory.length > 0) {

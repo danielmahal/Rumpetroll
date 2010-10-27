@@ -27,6 +27,8 @@ var initApp = function() {
 
 	document.addEventListener('keydown',    app.keydown, false);
 	document.addEventListener('keyup',    app.keyup, false);
+
+    document.oncontextmenu = app.oncontextmenu;
 	
 	document.getElementById('authorize-user-button').addEventListener('click', function(e) { 
 		app.authorize(null,null);

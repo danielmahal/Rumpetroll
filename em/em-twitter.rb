@@ -34,9 +34,6 @@ module EM
         },block
       )
     end
-
-    #TODO: Twitter.getAccess(token,secret)end    
-    #TODO: Twitter.request(:post,"command",&block)
     
   end  
 end

@@ -55,6 +55,8 @@ class TadpoleConnection
       message_handler(json)
     when "authorize"
       authorize_handler(json)
+    when "twitter"
+      twitter_handler(json)
     end    
   end
 
@@ -67,7 +69,7 @@ class TadpoleConnection
     name = json["name"]
     name = nil if name && name.include?("@")    
     @tadpole.handle   = (@tadpole.authorized || name || "Guest #{@tadpole.id}").to_s[0...70]
-    
+
     broadcast @tadpole.to_json
   end
 
@@ -76,7 +78,7 @@ class TadpoleConnection
     
     @storage.message(msg,@tadpole)
     
-	  broadcast( %({"type":"message","id":#{@tadpole.id},"message":#{ msg.to_json }}) )
+    broadcast( %({"type":"message","id":#{@tadpole.id},"message":#{ msg.to_json }}) )
   end
   
   def authorize_handler(json)
@@ -85,9 +87,15 @@ class TadpoleConnection
     if json["token"]
       EM::Twitter.verifyRequest(json["token"],json["verifier"]) { |auth|
         if auth && auth.authorized?
+          @auth = auth
           @tadpole.authorized = "@#{auth.screen_name}"
+          @tadpole.twitter_id = "#{auth.user_id}"
+
           @storage.authorized(auth.user_id,auth.screen_name)
           Syslog.info("Authenticated ##{@tadpole.id } as #{@tadpole.authorized}")
+
+          @tadpole.handle = @tadpole.authorized
+          broadcast @tadpole.to_json
         else          
   	      @authorization_lock = nil
   	    end
@@ -99,6 +107,33 @@ class TadpoleConnection
       }      
     end
     
+  end
+
+  def twitter_response(request,json)
+    if json["error"]
+        request["result"] = "failure"
+    else
+        request["result"] = "success"
+    end
+    @socket.send(request.to_json)
+  end
+
+  def twitter_handler(json)
+     if @auth && @auth.authorized?
+        case json["request"]
+        when "follow"
+            result = @auth.post("/friendships/create/#{json['id']}.json")
+            twitter_response(json,result.to_json)
+        when "unfollow"
+            result = @auth.post("/friendships/destroy/#{json['id']}.json")
+            twitter_response(json,result.to_json)        
+        when "friends"
+            result = @auth.get("/friends/ids.json")
+            if not result.to_json["error"]
+                @socket.send(%({"type":"twitter","request":"friends","result":#{result}}));
+            end
+        end
+     end
   end
   	
 end

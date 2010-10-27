@@ -236,9 +236,24 @@ a#force-init-button:hover {
 }
 
 #contextMenu {
-    width: 100px;
+    display:none;
     height: auto;
     position: absolute;
-    border-radius:
+    border-radius: 5px;
+    background-color: rgba(0,0,0,0.7);
+    padding:5px;
+}
+#contextMenu .item {
+    width: 80px;
+    height: 20px;
+    color:#fff;
+    padding:3px;
+    font-size:15px;
+    border-radius: 5px;
+    cursor:pointer;
+}
+#contextMenu .item:hover {
+    background-color: rgba(142,253,247,0.6);
+    color:black;
 }
 

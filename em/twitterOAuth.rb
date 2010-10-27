@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'oauth'
+require 'json'
 
 OAuthTokens = Struct.new(:request_token, :request_secret, :request_verifier, :access_token, :access_secret)
 
@@ -53,6 +54,18 @@ class TwitterAuthorization
   
   def authorized?
     @access_token != nil
+  end
+
+  def get(path, headers={})
+    headers.merge!("User-Agent" => "rumpetroll")
+    oauth_response = access_token.get("/1#{path}", headers)
+    return oauth_response.body
+  end
+
+  def post(path, body = '', headers={})
+    headers.merge!("User-Agent" => "rumpetroll")
+    oauth_response = access_token.post("/1#{path}",body, headers)
+    return oauth_response.body
   end
     
   private

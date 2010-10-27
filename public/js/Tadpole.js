@@ -6,10 +6,14 @@ var Tadpole = function() {
 	this.size = 4;
 	
     this.authorized = false;
+    this.friends = [];
+    this.twitter_id = 0;
+
 	this.name = '';
 	this.age = 0;
 	
 	this.hover = false;
+    this.color = new FadingColor(statusColors.none.clone(),3);
 
 	this.momentum = 0;
 	this.maxMomentum = 3;
@@ -25,7 +29,7 @@ var Tadpole = function() {
 	this.changed = 0;
 	this.timeSinceLastServerUpdate = 0;
 	
-	this.update = function(mouse) {
+	this.update = function(mouse,followers) {
 		tadpole.timeSinceLastServerUpdate++;
 		
 		tadpole.x += Math.cos(tadpole.angle) * tadpole.momentum;
@@ -47,32 +51,40 @@ var Tadpole = function() {
 		}
 
 		// Update tadpole hover/mouse state
-		if(Math.sqrt(Math.pow(tadpole.x - mouse.worldx,2) + Math.pow(tadpole.y - mouse.worldy,2)) < tadpole.size+2) {
+		if(Math.sqrt(Math.pow(tadpole.x - mouse.worldx,2) + Math.pow(tadpole.y - mouse.worldy,2)) < tadpole.size+2 && tadpole.authorized) {
 			tadpole.hover = true;
 			mouse.tadpole = tadpole;
+            tadpole.color.targetColor = statusColors.hover.clone();
 		}
 		else {
 			tadpole.hover = false;
+            tadpole.color.targetColor = statusColors.none.clone();
 		}
+
+        // Update tadpole color
+        if(tadpole.authorized && !tadpole.hover) {
+            if(tadpole.friends.indexOf(tadpole.twitter_id) != -1) {
+                tadpole.color.targetColor = statusColors.follower.clone();
+            }
+        }
 
 		tadpole.tail.update();
 	};
 	
 	this.onclick = function(e) {
-		if(e.ctrlKey && e.which == 1) {
+		if(e.ctrlKey && (e.which == 1 || e.which == 3)) {
 			if(tadpole.authorized && tadpole.hover) {
 				window.open("http://twitter.com/" + tadpole.name.substring(1));
                 return true;
 			}
 		}
-		else if(e.which == 2) {
-			//todo:open menu
-			e.preventDefault();
-            return true;
-		}
         return false;
 	};
-	
+
+    this.hasFriend = function(id) {
+        return tadpole.friends.indexOf(id) > -1;
+    }
+
 	this.userUpdate = function(tadpoles, angleTargetX, angleTargetY) {
 		this.age++;
 		
@@ -110,14 +122,10 @@ var Tadpole = function() {
 	
 	this.draw = function(context) {
 		var opacity = Math.max(Math.min(20 / Math.max(tadpole.timeSinceLastServerUpdate-300,1),1),.2).toFixed(3);
+        
+        tadpole.color.currentColor.a = opacity;
+        context.fillStyle = tadpole.color.nextIncrement().toString();
 
-		if(tadpole.hover && tadpole.authorized) {
-			context.fillStyle = 'rgba(192, 253, 247,'+opacity+')';
-			// context.shadowColor   = 'rgba(249, 136, 119, '+opacity*0.7+')';
-		}
-		else {
-			context.fillStyle = 'rgba(226,219,226,'+opacity+')';
-		}
 		
 		context.shadowOffsetX = 0;
 		context.shadowOffsetY = 0;
