@@ -1,4 +1,12 @@
 require 'em-mongo'
+require 'iconv'
+
+
+IC = Iconv.new('UTF-8//IGNORE', 'UTF-8')
+def clean_untrusted_string(str)  
+  IC.iconv(str.to_s + ' ')[0..-2]  
+end
+
 
 class ConnectionStorage
   
@@ -37,8 +45,8 @@ class ConnectionStorage
     @messages.insert( {
       :created_on => Time.now,
       :connection_id => @doc["_id"].to_s,
-      :body => body,      
-      :author => tadpole.handle,
+      :body => clean_untrusted_string(body),      
+      :author => clean_untrusted_string(tadpole.handle),
       :location => [tadpole.pos.x,tadpole.pos.y]
     })
   end

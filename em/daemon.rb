@@ -39,6 +39,8 @@ mongodb = Mongo::Connection.new.db("rumpetroll")
 messages = mongodb["messages"]
 messages.create_index([["location", Mongo::GEO2D]])
 
+Tadpole.resetCount( mongodb["connections"].count() )
+
 EM::Twitter::application = TwitterApp.new(settings[:twitter,:appKey],settings[:twitter,:appSecret],settings[:twitter,:callback])
 EM::Twitter::storage     = mongodb["twitter"]
 

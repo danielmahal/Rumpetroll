@@ -1,8 +1,11 @@
 require "geometry.rb"
 
 class Tadpole
-  
+    
   @@count = 0
+  def self.resetCount(newCount=nil)
+    @@count = newCount || 0
+  end
   
   attr_reader   :id
 
