@@ -86,6 +86,7 @@ strong {
 }
 #chat {
 	/*font-family: "Arial Rounded MT Bold";*/
+    cursor:default;
 	display: block;
 	position: absolute;
 	top: 60%;
