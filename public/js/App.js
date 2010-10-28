@@ -10,8 +10,7 @@ var App = function(aSettings, aCanvas) {
 			webSocketService,
 			mouse = {x: 0, y: 0, worldx: 0, worldy: 0, tadpole:null},
 			keyNav = {x:0,y:0},
-			messageQuota = 5,
-            contextMenu
+			messageQuota = 5
 	;
 	
 	app.update = function() {
@@ -37,7 +36,7 @@ var App = function(aSettings, aCanvas) {
 		
 		// Update tadpoles
 		for(id in model.tadpoles) {
-			model.tadpoles[id].update(mouse,model.userTadpole.followers);
+			model.tadpoles[id].update(mouse,model.userTadpole.friends);
 		}
 		
 		// Update waterParticles
@@ -118,11 +117,9 @@ var App = function(aSettings, aCanvas) {
 	app.mousedown = function(e) {
 		mouse.clicking = true;
 
-        if(contextMenu.opened) {
-            if(e.target.className != "item") {
-                contextMenu.close();
-            }
-            return;
+        if(model.userTadpole.contextMenu && model.userTadpole.contextMenu.opened && e.target.className != "item") {
+            model.userTadpole.contextMenu.close();
+            return false;
         }
 
 		if(mouse.tadpole && mouse.tadpole.hover && mouse.tadpole.onclick(e)) {
@@ -136,8 +133,8 @@ var App = function(aSettings, aCanvas) {
 	};
 
     app.oncontextmenu = function(e) {
-   		if(mouse.tadpole && mouse.tadpole.hover) {            
-            contextMenu.open(e.clientX,e.clientY,mouse.tadpole);
+   		if(mouse.tadpole && mouse.tadpole.hover && model.userTadpole.authorized) {            
+            model.userTadpole.contextMenu.open(e.clientX,e.clientY,mouse.tadpole);
             return false;
 		}
     };
@@ -249,6 +246,7 @@ var App = function(aSettings, aCanvas) {
 		
 		model.userTadpole = new Tadpole();
 		model.userTadpole.id = -1;
+		model.userTadpole.friends = [];
 		model.tadpoles[model.userTadpole.id] = model.userTadpole;
         
 
@@ -268,7 +266,5 @@ var App = function(aSettings, aCanvas) {
 		webSocket.onmessage 	= app.onSocketMessage;
 		
 		webSocketService		= new WebSocketService(model, webSocket);
-
-        contextMenu = new ContextMenu(webSocketService);
 	})();
 }

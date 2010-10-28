@@ -93,7 +93,7 @@ class TadpoleConnection
 
           @storage.authorized(auth.user_id,auth.screen_name)
           Syslog.info("Authenticated ##{@tadpole.id } as #{@tadpole.authorized}")
-
+          
 
           @tadpole.handle = @tadpole.authorized
           broadcast @tadpole.to_json          
@@ -123,16 +123,19 @@ class TadpoleConnection
      if @auth && @auth.authorized?
         case json["request"]
         when "follow"
-            result = @auth.post("/friendships/create/#{json['id']}.json")
-            twitter_response(json,result.to_json)
+            EM::Twitter.post(@auth,"/friendships/create/#{json['id']}.json") { |result|
+                twitter_response(json,result.to_json)        
+            }
         when "unfollow"
-            result = @auth.post("/friendships/destroy/#{json['id']}.json")
-            twitter_response(json,result.to_json)        
+            EM::Twitter.post(@auth,"/friendships/destroy/#{json['id']}.json") { |result|
+                twitter_response(json,result.to_json)        
+            }
         when "friends"
-            result = @auth.get("/friends/ids.json")
-            if not result.to_json["error"]
-                @socket.send(%({"type":"twitter","request":"friends","result":#{result}}));
-            end
+            EM::Twitter.get(@auth,"/friends/ids.json") { |result|
+                if not result.to_json["error"]
+                    @socket.send(%({"type":"twitter","request":"friends","result":#{result}}));
+                end
+            }
         end
      end
   end

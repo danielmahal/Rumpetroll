@@ -42,6 +42,6 @@ var FadingColor = function(color,rate) {
 
 var statusColors = {
     none:  new Color(226,219,226),
-    hover: new Color(192, 253, 247),
-    follower: new Color(255,110,50)
+    hover: new Color(182, 243, 237),
+    follower: new Color(255,200,126)
 };

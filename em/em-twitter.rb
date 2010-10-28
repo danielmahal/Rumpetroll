@@ -34,6 +34,27 @@ module EM
         },block
       )
     end
+
+    def self.rememberSession
+    end
+
+    def self.get(auth,path,&block)
+        EventMachine.defer(
+            proc {
+                result = auth.get(path)
+                result  
+            },block
+        )
+    end
     
+    def self.post(auth,path,&block)
+        EventMachine.defer(
+            proc {
+                result = auth.post(path)
+                result
+            },block
+        )
+    end
+
   end  
 end

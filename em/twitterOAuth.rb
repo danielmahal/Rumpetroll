@@ -58,13 +58,13 @@ class TwitterAuthorization
 
   def get(path, headers={})
     headers.merge!("User-Agent" => "rumpetroll")
-    oauth_response = access_token.get("/1#{path}", headers)
+    oauth_response = @access_token.get("/1#{path}", headers)
     return oauth_response.body
   end
 
   def post(path, body = '', headers={})
     headers.merge!("User-Agent" => "rumpetroll")
-    oauth_response = access_token.post("/1#{path}",body, headers)
+    oauth_response = @access_token.post("/1#{path}",body, headers)
     return oauth_response.body
   end
     
@@ -84,7 +84,9 @@ class TwitterAuthorization
           @tokens.access_token = at.token
           @tokens.access_secret = at.secret
           @screen_name = at.params[:screen_name]
-          @user_id = at.params[:user_id]          
+          @user_id = at.params[:user_id]
+          puts(@tokens.access_token)    
+          puts(@tokens.access_secret)       
         end
         
         at

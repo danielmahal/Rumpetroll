@@ -6,8 +6,8 @@ var Tadpole = function() {
 	this.size = 4;
 	
     this.authorized = false;
-    this.friends = [];
     this.twitter_id = 0;
+    this.isFriend = false;
 
 	this.name = '';
 	this.age = 0;
@@ -29,7 +29,7 @@ var Tadpole = function() {
 	this.changed = 0;
 	this.timeSinceLastServerUpdate = 0;
 	
-	this.update = function(mouse,followers) {
+	this.update = function(mouse,friends) {
 		tadpole.timeSinceLastServerUpdate++;
 		
 		tadpole.x += Math.cos(tadpole.angle) * tadpole.momentum;
@@ -63,13 +63,21 @@ var Tadpole = function() {
 
         // Update tadpole color
         if(tadpole.authorized && !tadpole.hover) {
-            if(tadpole.friends.indexOf(tadpole.twitter_id) != -1) {
+            if(friends.indexOf(tadpole.twitter_id) > -1) {
                 tadpole.color.targetColor = statusColors.follower.clone();
+                tadpole.isFriend = true;
+            }
+            else {
+                tadpole.isFriend = false;
             }
         }
 
 		tadpole.tail.update();
 	};
+
+    this.onauthorized = function(webSocketService) {
+        tadpole.contextMenu = new ContextMenu(webSocketService, tadpole);
+    };
 	
 	this.onclick = function(e) {
 		if(e.ctrlKey && (e.which == 1 || e.which == 3)) {

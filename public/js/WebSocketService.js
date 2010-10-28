@@ -31,9 +31,8 @@ var WebSocketService = function(model, webSocket) {
 
 		if(tadpole.id == model.userTadpole.id) {
             if(tadpole.authorized != data.authorized) {
-                //ladies and gentlemen we have just been authorized
-                //....
-                //..so we have to get our friends   
+                // We have just been authorized   
+                tadpole.onauthorized(webSocketService);
                 webSocketService.sendTwitterRequest("friends");
             }
             tadpole.authorized = data.authorized;
