@@ -79,14 +79,7 @@ var App = function(aSettings, aCanvas) {
 	
 	
 	app.onSocketOpen = function(e) {
-		//console.log('Socket opened!', e);
-		
-		//FIXIT: Proof of concept. refactor!
-		uri = parseUri(document.location)
-		if ( uri.queryKey.oauth_token ) {
-			app.authorize(uri.queryKey.oauth_token, uri.queryKey.oauth_verifier)						
-		}
-		// end of proof of concept code.
+        app.tryRestoreSession();
 	};
 	
 	app.onSocketClose = function(e) {
@@ -113,6 +106,17 @@ var App = function(aSettings, aCanvas) {
 	app.authorize = function(token,verifier) {
 		webSocketService.authorize(token,verifier);
 	}
+    app.deauthorize = function() {
+        delete localStorage["request_token"];
+        delete localStorage["request_verifier"];
+        webSocketService.deauthorize();
+    }
+
+    app.tryRestoreSession = function() {
+        if(localStorage["request_token"] && localStorage["request_verifier"]) {
+            app.authorize(localStorage["request_token"], localStorage["request_verifier"]);
+        }
+    }
 	
 	app.mousedown = function(e) {
 		mouse.clicking = true;

@@ -13,7 +13,8 @@
 			uri = parseUri(document.location)
 			if ( uri.queryKey.oauth_token ) {
 					window.opener.app.authorize(uri.queryKey.oauth_token, uri.queryKey.oauth_verifier);
-                    localStorage[""] = uri.queryKey.oauth_token, uri.queryKey.oauth_verifier
+                    localStorage["request_token"] = uri.queryKey.oauth_token;
+                    localStorage["request_verifier"] = uri.queryKey.oauth_verifier
 					window.close()
 			}
 		</script>

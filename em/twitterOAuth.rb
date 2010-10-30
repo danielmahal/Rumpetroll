@@ -46,6 +46,12 @@ class TwitterAuthorization
     @tokens.request_verifier  = request_verifier || @tokens.request_verifier
     access_token != nil
   end
+  
+  def restore_session(token,secret)
+    @tokens.access_token = token
+    @tokens.access_secret = secret
+    access_token
+  end
       
   def request(*args)
     at = access_token
@@ -58,13 +64,13 @@ class TwitterAuthorization
 
   def get(path, headers={})
     headers.merge!("User-Agent" => "rumpetroll")
-    oauth_response = @access_token.get("/1#{path}", headers)
+    oauth_response = access_token.get("/1#{path}", headers)
     return oauth_response.body
   end
 
   def post(path, body = '', headers={})
     headers.merge!("User-Agent" => "rumpetroll")
-    oauth_response = @access_token.post("/1#{path}",body, headers)
+    oauth_response = access_token.post("/1#{path}",body, headers)
     return oauth_response.body
   end
     
@@ -73,8 +79,11 @@ class TwitterAuthorization
     def access_token
       @access_token ||= begin
         if @tokens.access_token && @tokens.access_secret
-          #TODO: Doesn't actually confirm with server and get screen name.
           at = OAuth::AccessToken.new(@consumer, @tokens.access_token, @tokens.access_secret)
+          params = JSON.parse(at.get("/1/account/verify_credentials.json", {"User-Agent" => "rumpetroll"}).body)
+          if params["error"] 
+            at = nil
+          end
         elsif @tokens.request_token && @tokens.request_secret && @tokens.request_verifier
           request_token = OAuth::RequestToken.new(@consumer, @tokens.request_token, @tokens.request_secret )
           at = request_token.get_access_token(:oauth_verifier => @tokens.request_verifier) rescue nil          
@@ -83,10 +92,8 @@ class TwitterAuthorization
         if at
           @tokens.access_token = at.token
           @tokens.access_secret = at.secret
-          @screen_name = at.params[:screen_name]
-          @user_id = at.params[:user_id]
-          puts(@tokens.access_token)    
-          puts(@tokens.access_secret)       
+          @screen_name = at.params[:screen_name] || params['screen_name']
+          @user_id = at.params[:user_id] || params['id']
         end
         
         at

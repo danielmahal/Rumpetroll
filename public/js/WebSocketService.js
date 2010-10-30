@@ -31,9 +31,12 @@ var WebSocketService = function(model, webSocket) {
 
 		if(tadpole.id == model.userTadpole.id) {
             if(tadpole.authorized != data.authorized) {
-                // We have just been authorized   
-                tadpole.onauthorized(webSocketService);
-                webSocketService.sendTwitterRequest("friends");
+                // We have just been authorized/deauthorized
+                if(tadpole.authorized) {
+                    tadpole.onauthorized(webSocketService);
+                    webSocketService.sendTwitterRequest("friends");
+                }
+                toggleSignIn(data.authorized);
             }
             tadpole.authorized = data.authorized;
 			tadpole.name = data.name;
@@ -151,6 +154,13 @@ var WebSocketService = function(model, webSocket) {
 			verifier: verifier
 		};
 		
+		webSocket.send(JSON.stringify(sendObj));
+	}	
+    this.deauthorize = function() {
+		var sendObj = {
+			type: 'deauthorize',
+		};
+
 		webSocket.send(JSON.stringify(sendObj));
 	}
 }

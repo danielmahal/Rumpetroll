@@ -54,7 +54,9 @@ class TadpoleConnection
       detect_spam()
       message_handler(json)
     when "authorize"
-      authorize_handler(json)
+      authorize_handler(json)    
+    when "deauthorize"
+      deauthorize_tadpole()
     when "twitter"
       twitter_handler(json)
     end    
@@ -81,26 +83,51 @@ class TadpoleConnection
     broadcast( %({"type":"message","id":#{@tadpole.id},"message":#{ msg.to_json }}) )
   end
   
+  def authorize_tadpole(auth)
+    if auth && auth.authorized?
+      @auth = auth
+      @tadpole.authorized = "@#{auth.screen_name}"
+      @tadpole.twitter_id = "#{auth.user_id}"
+
+      @storage.authorized(auth.user_id,auth.screen_name)
+      Syslog.info("Authenticated ##{@tadpole.id } as #{@tadpole.authorized}")
+
+      
+      @tadpole.handle = @tadpole.authorized
+      broadcast @tadpole.to_json          
+      
+      EM::Twitter.storeSession(auth.tokens)
+    else          
+      @authorization_lock = nil
+    end
+  end  
+
+  def deauthorize_tadpole()
+    if @auth && @auth.authorized?
+      @auth = nil
+      @tadpole.authorized = nil
+      @tadpole.twitter_id = 0
+      
+      @tadpole.handle = "Guest #{@tadpole.id}".to_s[0...70]
+
+      broadcast @tadpole.to_json
+      @authorization_lock = nil
+    end
+  end
+  
   def authorize_handler(json)
     return if @authorization_lock 
     @authorization_lock = true;
     if json["token"]
-      EM::Twitter.verifyRequest(json["token"],json["verifier"]) { |auth|
-        if auth && auth.authorized?
-          @auth = auth
-          @tadpole.authorized = "@#{auth.screen_name}"
-          @tadpole.twitter_id = "#{auth.user_id}"
-
-          @storage.authorized(auth.user_id,auth.screen_name)
-          Syslog.info("Authenticated ##{@tadpole.id } as #{@tadpole.authorized}")
-          
-
-          @tadpole.handle = @tadpole.authorized
-          broadcast @tadpole.to_json          
-        else          
-  	      @authorization_lock = nil
-  	    end
-      }
+      if session = EM::Twitter.session(json["token"],json["verifier"])
+        EM::Twitter.restoreSession(session) { |auth|
+            authorize_tadpole(auth)
+        }
+      else
+          EM::Twitter.verifyRequest(json["token"],json["verifier"]) { |auth|
+            authorize_tadpole(auth)
+        }
+      end
     else
       EM::Twitter.getRequest { |auth| 
         @socket.send(%({"type":"redirect","url":#{ auth.authorize_url.to_json }})) 

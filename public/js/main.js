@@ -10,6 +10,28 @@ var runLoop = function() {
 	app.update();
 	app.draw();
 }
+
+var toggleSignIn = function(authorized) {
+    if(authorized) {
+        document.getElementById("auth").innerHTML = "If you don't sign out we'll remember<br />you for next time. <a href=\"#\" id=\"deauthorize-user-button\">Sign out</a>.";
+        document.getElementById('deauthorize-user-button').addEventListener('click', signOut);
+    }
+    else {
+        document.getElementById("auth").innerHTML = "<strong>@names</strong> are reserved for<br /> twitter users. <a href=\"#\" id=\"authorize-user-button\">Sign in</a>.";
+        	document.getElementById('authorize-user-button').addEventListener('click', signIn);
+    }
+};
+
+var signIn = function() {
+    app.authorize(null,null);
+	authWindow = window.open("auth.html","","width=950,height=460,menubar=no,toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes')");
+	return false;
+};
+var signOut = function() {
+    app.deauthorize();
+    return false;
+};
+
 var initApp = function() {
 	if (app!=null) { return; }
 	app = new App(settings, document.getElementById('canvas'));
@@ -30,12 +52,7 @@ var initApp = function() {
 
     document.oncontextmenu = app.oncontextmenu;
 	
-	document.getElementById('authorize-user-button').addEventListener('click', function(e) { 
-		app.authorize(null,null);
-		authWindow = window.open("auth.html","","width=950,height=460,menubar=no,toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes')")
-		return false;
-	});
-
+	toggleSignIn(false);
 	setInterval(runLoop,30);
 }
 
