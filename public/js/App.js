@@ -9,7 +9,7 @@ var App = function(aSettings, aCanvas) {
 			webSocket,
 			webSocketService,
 			mouse = {x: 0, y: 0, worldx: 0, worldy: 0, tadpole:null},
-			keyNav = {x:0,y:0},
+			keyNav = {x: 0,y: 0,currentX: 0, currentY: 0, active: false},
 			messageQuota = 5
 	;
 	
@@ -20,12 +20,15 @@ var App = function(aSettings, aCanvas) {
 		if(keyNav.x != 0 || keyNav.y != 0) {
 			model.userTadpole.userUpdate(model.tadpoles, model.userTadpole.x + keyNav.x,model.userTadpole.y + keyNav.y);
 		}
-		else {
+		else if(!keyNav.active) {
 			var mvp = getMouseWorldPosition();
 			mouse.worldx = mvp.x;
 			mouse.worldy = mvp.y;
+            //console.log("worldx: " + mouse.worldx);
+            //console.log("worldy: " + mouse.worldy);
 			model.userTadpole.userUpdate(model.tadpoles, mouse.worldx, mouse.worldy);
 		}
+        else model.userTadpole.userUpdate(model.tadpoles, model.userTadpole.x + keyNav.currentX,model.userTadpole.y + keyNav.currentY)
 		
 		if(model.userTadpole.age % 6 == 0 && model.userTadpole.changed > 1 && webSocketService.hasConnection) {
 			model.userTadpole.changed = 0;
@@ -120,7 +123,7 @@ var App = function(aSettings, aCanvas) {
 	
 	app.mousedown = function(e) {
 		mouse.clicking = true;
-
+        keyNav.active = false;
         if(model.userTadpole.contextMenu && model.userTadpole.contextMenu.opened && e.target.className != "item") {
             model.userTadpole.contextMenu.close();
             return false;
@@ -153,44 +156,48 @@ var App = function(aSettings, aCanvas) {
 		mouse.x = e.clientX;
 		mouse.y = e.clientY;
 	};
-
+   
+    keyNav.validKeyCode = function(keyCode) {
+        return keyCode == keys.up || keyCode == keys.down || keyCode == keys.left || keyCode == keys.right;
+    }; 
+   
 	app.keydown = function(e) {
-		if(e.keyCode == keys.up) {
-			keyNav.y = -1;
+        if(keyNav.validKeyCode(e.keyCode)) {
+		    switch(e.keyCode) {
+                case keys.up:
+    			    keyNav.y = -1;
+                    break;
+            	case keys.down:
+			        keyNav.y = 1;
+                    break;
+    		    case keys.left:
+	    		    keyNav.x = -1;
+                    break;
+		        case keys.right:
+    			    keyNav.x = 1;
+                    break;
+		    }
+            e.preventDefault();
 			model.userTadpole.momentum = model.userTadpole.targetMomentum = model.userTadpole.maxMomentum;
-			e.preventDefault();
-		}
-		else if(e.keyCode == keys.down) {
-			keyNav.y = 1;
-			model.userTadpole.momentum = model.userTadpole.targetMomentum = model.userTadpole.maxMomentum;
-			e.preventDefault();
-		}
-		else if(e.keyCode == keys.left) {
-			keyNav.x = -1;
-			model.userTadpole.momentum = model.userTadpole.targetMomentum = model.userTadpole.maxMomentum;
-			e.preventDefault();
-		}
-		else if(e.keyCode == keys.right) {
-			keyNav.x = 1;
-			model.userTadpole.momentum = model.userTadpole.targetMomentum = model.userTadpole.maxMomentum;
-			e.preventDefault();
-		}
+            keyNav.currentX = keyNav.x;
+            keyNav.currentY = keyNav.y;
+            keyNav.active = true;
+        }
 	};
 	app.keyup = function(e) {
-		if(e.keyCode == keys.up || e.keyCode == keys.down) {
-			keyNav.y = 0;
-			if(keyNav.x == 0 && keyNav.y == 0) {
-				model.userTadpole.targetMomentum = 0;
-			}
-			e.preventDefault();
-		}
-		else if(e.keyCode == keys.left || e.keyCode == keys.right) {
-			keyNav.x = 0;
-			if(keyNav.x == 0 && keyNav.y == 0) {
-				model.userTadpole.targetMomentum = 0;
-			}
-			e.preventDefault();
-		}
+        if(keyNav.validKeyCode(e.keyCode)) {
+		    if(e.keyCode == keys.up || e.keyCode == keys.down) {
+			    keyNav.y = 0;
+		    }
+		    else if(e.keyCode == keys.left || e.keyCode == keys.right) {
+			    keyNav.x = 0;
+		    }
+
+		    if(keyNav.x == 0 && keyNav.y == 0) {
+        		model.userTadpole.targetMomentum = 0;
+		    }
+    	    e.preventDefault();
+        }
 	};
 	
 	app.touchstart = function(e) {
