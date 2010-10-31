@@ -12,9 +12,15 @@
 		var closechat = function() {
 			hidden = true;
 			input.css("opacity","0");
+			input.css("width","0px");
 			messagePointer = messageHistory.length;
 			input.val('');
-			chatText.text('')
+			chatText.text('');
+		}		
+        
+        var openchat = function() {
+			hidden = false;
+			input.css("opacity","1");
 		}
 
 		var updateDimensions = function(){
@@ -33,7 +39,7 @@
 			if(input.val().length > 0) {
 				//set timeout because event occurs before text is entered
 				setTimeout(updateDimensions,0.1);
-				input.css("opacity","1");		
+                openchat();
 			} else {
 				closechat();
 			}
@@ -76,8 +82,7 @@
 
 			if(input.val().length > 0) {
 				updateDimensions();
-				input.css("opacity","1");
-				hidden = false;
+                openchat();
 			} else {
 				closechat();
 			}

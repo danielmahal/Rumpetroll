@@ -98,6 +98,7 @@ strong {
 	text-align: center;
 	border-style:none;
 	outline-style:none;
+    width: 0px;
 	height:30px;
 	opacity:0;
 	-webkit-transition: opacity .2s linear;
