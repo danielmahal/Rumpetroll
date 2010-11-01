@@ -9,9 +9,7 @@ var Arrow = function(tadpole, camera) {
 	
 	this.angle = 0;
 	this.distance = 10;
-	
-	this.opacity = 1;
-	
+
 	this.update = function() {
 		arrow.angle = Math.atan2(tadpole.y - arrow.camera.y, tadpole.x - arrow.camera.x);
 	};
@@ -24,7 +22,7 @@ var Arrow = function(tadpole, camera) {
 			arrow.tadpole.x > cameraBounds[1].x ||
 			arrow.tadpole.y > cameraBounds[1].y ) {
 			
-			var size = 4;
+			var size = arrow.tadpole.isFriend ? 6 : 4;
 			
 			var arrowDistance = 100;
 
@@ -49,7 +47,7 @@ var Arrow = function(tadpole, camera) {
 			var side2 = calcPoint(x, y, this.angle, 0.5, size);
 
 			// Draw arrow
-			context.fillStyle = 'rgba(255,255,255,'+arrow.opacity+')';
+			context.fillStyle = arrow.tadpole.color.targetColor.toString();
 			context.beginPath();
 			context.moveTo(point.x, point.y);
 			context.lineTo(side1.x, side1.y);

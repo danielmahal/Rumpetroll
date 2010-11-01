@@ -103,7 +103,6 @@ var App = function(aSettings, aCanvas) {
 	    messageQuota--;
 	    webSocketService.sendMessage(msg);
 	  }
-	  
 	}
 	
 	app.authorize = function(token,verifier) {
@@ -139,19 +138,19 @@ var App = function(aSettings, aCanvas) {
 
 	};
 
-    app.oncontextmenu = function(e) {
-   		if(mouse.tadpole && mouse.tadpole.hover && model.userTadpole.authorized) {            
-            model.userTadpole.contextMenu.open(e.clientX,e.clientY,mouse.tadpole);
-            return false;
-		}
-    };
-	
 	app.mouseup = function(e) {
 		if(model.userTadpole && e.which == 1) {
 			model.userTadpole.targetMomentum = 0;
 		}
 	};
 	
+    app.oncontextmenu = function(e) {
+   		if(mouse.tadpole && mouse.tadpole.hover && model.userTadpole.authorized) {            
+            model.userTadpole.contextMenu.open(e.clientX,e.clientY,mouse.tadpole);
+            return false;
+		}
+    };
+
 	app.mousemove = function(e) {
 		mouse.x = e.clientX;
 		mouse.y = e.clientY;
@@ -184,6 +183,7 @@ var App = function(aSettings, aCanvas) {
             keyNav.active = true;
         }
 	};
+
 	app.keyup = function(e) {
         if(keyNav.validKeyCode(e.keyCode)) {
 		    if(e.keyCode == keys.up || e.keyCode == keys.down) {
@@ -259,7 +259,6 @@ var App = function(aSettings, aCanvas) {
 		model.userTadpole.id = -1;
 		model.userTadpole.friends = [];
 		model.tadpoles[model.userTadpole.id] = model.userTadpole;
-        
 
 
 		model.waterParticles = [];
