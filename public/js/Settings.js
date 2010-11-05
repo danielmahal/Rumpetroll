@@ -1,3 +1,3 @@
 var Settings = function() {
-  this.socketServer = 'ws://localhost:8181';
+    this.socketServer = 'ws://192.168.137.111:8181';
 }
