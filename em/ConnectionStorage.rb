@@ -2,6 +2,16 @@ require 'em-mongo'
 require 'iconv'
 
 
+
+#Quickfix: for undefined method `associate_callback_target' for #<EventMachine::Mongo::EMConnection:0x8dd44bc>
+module EM
+  class Connection
+    def associate_callback_target(sig)  
+    end
+  end
+end
+
+
 IC = Iconv.new('UTF-8//IGNORE', 'UTF-8')
 def clean_untrusted_string(str)  
   IC.iconv(str.to_s + ' ')[0..-2]  
