@@ -224,5 +224,14 @@ a#force-init-button:hover {
 #instructions {
 	position: absolute;
 	top: 30px;
-	right: 40px;
+	right: 60px;
 }
+
+#fwa {
+	display: none; /*remove on 27th November 2010*/
+	position: absolute;
+	top: 0px;
+	right: 0px;
+}
+
+
