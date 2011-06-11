@@ -1,0 +1,30 @@
+#!/usr/bin/env ruby
+# encoding: utf-8
+
+require 'rubygems'
+require 'bundler/setup'
+Bundler.require(:default)
+
+basedir = File.dirname(File.expand_path(File.join(__FILE__,"..")))
+script  = File.join(basedir,"em","daemon.rb")
+
+require 'daemons'
+
+def stop_and_exit
+  # Do something useful here....
+  exit 0
+end
+ 
+Signal.trap('INT') { stop_and_exit }
+Signal.trap('TERM'){ stop_and_exit }
+
+
+options = {
+  :app_name => 'rumpetrolld',
+  :multiple => false,
+  :log_output => true,
+  :dir_mode => :normal,
+  :dir => File.join(basedir,'log')
+}
+
+Daemons.run(script, options)

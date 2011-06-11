@@ -2,6 +2,7 @@
 # encoding: utf-8
 
 $: << File.dirname(__FILE__) 
+rootdir = File.join(File.dirname(__FILE__),'..')
 
 require 'rubygems'
 require 'em-websocket'
@@ -16,7 +17,7 @@ require 'syslog'
 require 'settings'
 
 
-settings = Settings.new('data/settings.yaml')
+settings = Settings.new(File.join(rootdir,'data','settings.yaml'))
 
 DEV_MODE = ARGV.include? "--dev"
 VERBOSE_MODE = ARGV.include? "--verbose"

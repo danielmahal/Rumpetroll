@@ -32,7 +32,7 @@ var initApp = function() {
 		app.authorize(null,null);
 		authWindow = window.open("auth.html","","width=950,height=460,menubar=no,toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes')")
 		return false;
-	});
+	},false);
 
 	setInterval(runLoop,30);
 }
@@ -47,7 +47,7 @@ if(Modernizr.canvas && Modernizr.websockets) {
 	initApp();
 } else {
 	document.getElementById('unsupported-browser').style.display = "block";	
-	document.getElementById('force-init-button').addEventListener('click', forceInit);
+	document.getElementById('force-init-button').addEventListener('click', forceInit, false);
 }
 
 var addStats = function() {
