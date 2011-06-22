@@ -24,11 +24,11 @@ namespace :deploy do
     # run "#{try_sudo} touch #{File.join(current_path,'tmp','restart.txt')}"
   end
   
-  # task :symlink_data do
-  #   # run "ln -nfs #{shared_path}/config/database.yml #{release_path}/config/database.yml"
-  #   run "mkdir -p #{shared_path}/data"
-  #   run "ln -nfs #{shared_path}/data #{release_path}/data"
-  # end
+  task :symlink_data do
+    # run "ln -nfs #{shared_path}/config/database.yml #{release_path}/config/database.yml"
+    run "mkdir -p #{shared_path}/data"
+    run "ln -nfs #{shared_path}/data #{release_path}/data"
+  end
   
 end
 

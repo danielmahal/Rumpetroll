@@ -1,3 +1,5 @@
+# 
+# Create a data/settings.yaml file based on this example.
 #
 # For security reasons, settings.yaml is not part of the repository.
 # You may use this file as a base for setting up your own settings file.
