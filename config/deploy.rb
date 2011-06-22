@@ -1,6 +1,6 @@
 require "bundler/capistrano"
 
-set :application, "rumpetroll.ideon.co"
+set :application, "rumpetroll.motherfrog.com"
 set :repository,  "git@github.com:danielmahal/Rumpetroll.git"
 set :scm, :git
 set :user, "deploy"
@@ -32,4 +32,4 @@ namespace :deploy do
   
 end
 
-# after "deploy:symlink","deploy:symlink_data"
+after "deploy:symlink","deploy:symlink_data"
