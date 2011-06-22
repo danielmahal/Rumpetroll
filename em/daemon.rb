@@ -57,7 +57,7 @@ begin
   	  port, ip = Socket.unpack_sockaddr_in(socket.get_peername)
   	  socket.onopen {
   	    origin = socket.request["Origin"]
-    	  if WHITELIST.include?(origin) || DEV_MODE
+    	  if true || WHITELIST.include?(origin) || DEV_MODE
     	    TadpoleConnection.new(socket, channel, ConnectionStorage.new(db))
     	  else
     	    Syslog.warning("Connection from: #{ip}:#{port} at #{origin} did not match whitelist" )
