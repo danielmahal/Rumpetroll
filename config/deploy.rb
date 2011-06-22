@@ -18,10 +18,16 @@ role :app, "50.56.33.132"
 
 namespace :deploy do
   
-  task :start do ; end
-  task :stop do ; end
+  rumpetrolld_bin = "#{File.join(current_path,'bin','rumpetrolld')}"
+  
+  task :start do
+    run "#{try_sudo} #{rumpetrolld_bin} start"
+  end
+  task :stop do 
+    run "#{try_sudo} #{rumpetrolld_bin} stop"
+  end
   task :restart, :roles => :app, :except => { :no_release => true } do
-    # run "#{try_sudo} touch #{File.join(current_path,'tmp','restart.txt')}"
+    run "#{try_sudo} #{rumpetrolld_bin} restart"
   end
   
   task :symlink_data do
