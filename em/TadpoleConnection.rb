@@ -34,7 +34,7 @@ class TadpoleConnection
 	end
 		
 	def broadcast(message)
-		@channel << message
+		@channel << message rescue nil
 	end
 	
 	def detect_spam
@@ -65,7 +65,7 @@ class TadpoleConnection
     @tadpole.momentum = json["momentum"].to_f rescue 0    
     
     name = json["name"]
-    name = nil if name && name.include?("@")    
+    name = nil if name && name.to_s.include?("@")    
     @tadpole.handle   = (@tadpole.authorized || name || "Guest #{@tadpole.id}").to_s[0...70]
     
     broadcast @tadpole.to_json
