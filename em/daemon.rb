@@ -1,7 +1,7 @@
-#!/usr/bin/ruby
+#!/usr/bin/env ruby
 # encoding: utf-8
 
-$: << File.dirname(__FILE__) 
+$: << File.dirname(__FILE__)
 rootdir = File.join(File.dirname(__FILE__),'..')
 
 require 'rubygems'
@@ -14,60 +14,66 @@ require 'TadpoleConnection.rb'
 require 'twitterOAuth.rb'
 require 'utils'
 require 'syslog'
-require 'settings'
+require 'trollop'
 
+CLIoptions = Trollop::options do
+  banner "Run the Rumpetroll socet server."
+  opt :verbose,   "Verbose output"
+  opt :dev,   "Run in more lenient development mode"
+  opt :port,  "Port to run on", :type => :int, :required  => true
+end
 
-settings = Settings.new(File.join(rootdir,'data','settings.yaml'))
-
-DEV_MODE = ARGV.include? "--dev"
-VERBOSE_MODE = ARGV.include? "--verbose"
-
+DEV_MODE = CLIoptions[:dev]
+VERBOSE_MODE = CLIoptions[:verbose]
 
 HOST = '0.0.0.0'
-PORT = DEV_MODE ? settings[:websockets,:devPort] : settings[:websockets,:port]
-WHITELIST = settings[:websockets,:originWhitelist]
+PORT = CLIoptions[:port]
+WHITELIST = (ENV["ORIGIN_WHITE_LIST"]||"").split(/\s+/)
 
 if is_port_open?(HOST, PORT)
   msg = "ERROR: #{HOST}:#{PORT} is already open. Cannot start daemon."
-  STDERR.puts msg  
+  STDERR.puts msg
   Syslog.open("rumpetrolld") do
     Syslog.err msg
-  end  
+  end
   exit 1
 end
 
-mongodb = Mongo::Connection.new.db("rumpetroll")
-messages = mongodb["messages"]
-messages.create_index([["location", Mongo::GEO2D]])
 
-Tadpole.resetCount( mongodb["connections"].count() )
+MONGODB_URI = ENV['MONGO_URL']
+if MONGODB_URI
+  mongo_client = Mongo::Client.new(MONGODB_URI)
+  mongodb = mongo_client.database
+  messages = mongodb["messages"]
+  #messages.indexes.create_one([["location", Mongo::GEO2D]])
+  Tadpole.resetCount( mongodb["connections"].count() )
+  EM::Twitter::storage = mongodb["twitter-secrets"]
+end
 
-EM::Twitter::application = TwitterApp.new(settings[:twitter,:appKey],settings[:twitter,:appSecret],settings[:twitter,:callback])
-EM::Twitter::storage     = mongodb["twitter"]
-
+EM::Twitter::application = TwitterApp.new( ENV["TWITTER_APP_KEY"], ENV["TWITTER_APP_SECRET"], ENV["TWITTER_CALLBACK"] )
 
 begin
-      
-  Syslog.open("rumpetrolld")  
-  EventMachine.run do        
-    db = EM::Mongo::Connection.new.db('rumpetroll')
+
+  Syslog.open("rumpetrolld")
+  EventMachine.run do
+    db = MONGODB_URI ? Mongo::Client.new(MONGODB_URI).database : nil
   	channel = EM::Channel.new
-  	
-  	EventMachine::WebSocket.start(:host => HOST, :port => PORT, :debug => VERBOSE_MODE) do |socket|  	  
+
+  	EventMachine::WebSocket.start(:host => HOST, :port => PORT, :debug => VERBOSE_MODE) do |socket|
   	  port, ip = Socket.unpack_sockaddr_in(socket.get_peername)
-  	  socket.onopen {
-  	    origin = socket.request["Origin"]
-    	  if true || WHITELIST.include?(origin) || DEV_MODE
-    	    TadpoleConnection.new(socket, channel, ConnectionStorage.new(db))
+  	  socket.onopen { |handshake|
+    	  if WHITELIST.include?(handshake.origin) || DEV_MODE
+          storage = db ? ConnectionStorage.new(db) : nil
+    	    TadpoleConnection.new(socket, channel, storage)
     	  else
     	    Syslog.warning("Connection from: #{ip}:#{port} at #{origin} did not match whitelist" )
   	      socket.close_connection
-    	  end         
-  	  }  	  
+    	  end
+  	  }
   	end
-    
+
   	Syslog.notice "Server started at #{HOST}:#{PORT}."
-  end 
+  end
 
 rescue Exception => e
   Syslog.err "#{e} at: #{e.backtrace.join(", ")}"

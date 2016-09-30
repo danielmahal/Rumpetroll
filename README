@@ -9,11 +9,16 @@ Full source available at http://github.com/danielmahal/Rumpetroll
 Event Machine WebSocket Server implementation
 ---------------------------------------------
 
-1. Before launching the server. Make sure you create and edit
-settings.yaml. For security reasons you should never add 
-settings.yaml to a public repository.
-	
-	mv data/settings.yaml.example data/settings.yaml
+1. Before launching the server. Set the appropriate enviroment variables
+   (Note:settings.yaml is not used anymore)
+
+  MONGO_URL="rumpetroll"
+  SOCKET_PORT=8180
+  ORIGIN_WHITE_LIST=http://rumpetroll.com http://localhost:3000 http://rumpetroll.motherfrog.com
+  TWITTER_APP_KEY=KEY
+  TWITTER_APP_SECRET=SECRET
+  TWITTER_CALLBACK=http://rumpetroll.com/auth.html
+
 
 2. Run a mongodb daemon on localhost:27017
 
@@ -22,11 +27,11 @@ settings.yaml to a public repository.
 	Optional arguments:
 	--dev	Launch server and accept connections from any origin.
 	--verbose	Set EventMachine WebSockets to debug mode.
-	
-	
+
+
 Libraries used:
 
-EventMachine	http://rubyeventmachine.com/	
+EventMachine	http://rubyeventmachine.com/
 em-websockets	http://github.com/igrigorik/em-websocket
 oauth-ruby	http://oauth.rubyforge.org/, http://github.com/oauth/oauth-ruby
 MongoDB		http://mongodb.org, http://github.com/mongodb/mongo-ruby-driver
