@@ -66,7 +66,7 @@ begin
           storage = db ? ConnectionStorage.new(db) : nil
     	    TadpoleConnection.new(socket, channel, storage)
     	  else
-    	    Syslog.warning("Connection from: #{ip}:#{port} at #{origin} did not match whitelist" )
+    	    Syslog.warning("Connection from: #{ip}:#{port} did not match whitelist" )
   	      socket.close_connection
     	  end
   	  }
