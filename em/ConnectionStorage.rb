@@ -57,7 +57,7 @@ class ConnectionStorage
       :connection_id => @doc["_id"].to_s,
       :body => clean_untrusted_string(body),
       :author => clean_untrusted_string(tadpole.handle),
-      :location => [tadpole.pos.x,tadpole.pos.y]
+      :location => [0,0] ## Used to be [tadpole.pos.x,tadpole.pos.y] MongoDB only accepts points in interval of [ -180, 180 ] now
     })
   end
 
